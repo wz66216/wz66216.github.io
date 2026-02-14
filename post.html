@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="从零开始学建站，记录搭建个人博客的完整过程">
+  <title>我的第一篇博客：从零开始学建站 - 我的博客</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 导航栏（和首页一样） -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">&#9997;</span>
+        我的博客
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="about.html">关于我</a></li>
+        <li><a href="https://github.com" target="_blank">GitHub</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="打开菜单">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 文章内容 -->
+  <article class="post-page">
+    <h1>我的第一篇博客：从零开始学建站</h1>
+    
+    <div class="post-meta">
+      <time datetime="2026-02-14">2026年2月14日</time>
+      <span class="post-tag">学习笔记</span>
+    </div>
+
+    <p>今天，我踏上了学习网站开发的旅程。作为一个完全的零基础新手，我想把整个学习过程记录下来，希望能帮助到同样想入门的朋友。</p>
+
+    <h2>为什么要学建站？</h2>
+    <p>在这个数字时代，拥有一个自己的网站就像拥有一个属于自己的小天地。你可以在上面分享知识、展示作品、记录生活，不受任何平台的限制。</p>
+
+    <blockquote>
+      "拥有自己的网站，就像在互联网上拥有一块属于自己的土地。"
+    </blockquote>
+
+    <h2>网站的三大核心技术</h2>
+    <p>搭建网站需要了解三门技术，它们各司其职：</p>
+
+    <h3>1. HTML - 网页的骨架</h3>
+    <p>HTML（HyperText Markup Language，超文本标记语言）定义了网页的<strong>结构和内容</strong>。所有的文字、图片、链接都是通过 HTML 标签来组织的。</p>
+    <pre><code>&lt;!-- 这是一个简单的 HTML 示例 --&gt;
+&lt;h1&gt;这是标题&lt;/h1&gt;
+&lt;p&gt;这是一个段落。&lt;/p&gt;
+&lt;a href="https://example.com"&gt;这是一个链接&lt;/a&gt;</code></pre>
+
+    <h3>2. CSS - 网页的外观</h3>
+    <p>CSS（Cascading Style Sheets，层叠样式表）负责网页的<strong>视觉呈现</strong>。颜色、字体、布局、动画效果都由 CSS 控制。</p>
+    <pre><code>/* CSS 让标题变成蓝色，字号 24px */
+h1 {
+  color: blue;
+  font-size: 24px;
+}</code></pre>
+
+    <h3>3. JavaScript - 网页的行为</h3>
+    <p>JavaScript 让网页具有<strong>交互能力</strong>。按钮点击、表单验证、动态内容加载都靠它。</p>
+    <pre><code>// 点击按钮时弹出提示
+document.querySelector('button').addEventListener('click', function() {
+  alert('你点击了按钮！');
+});</code></pre>
+
+    <h2>有用的学习资源</h2>
+    <ul>
+      <li><strong>MDN Web Docs</strong>（developer.mozilla.org）— 最权威的 Web 技术文档</li>
+      <li><strong>W3Schools</strong>（w3schools.com）— 适合入门的交互式教程</li>
+      <li><strong>菜鸟教程</strong>（runoob.com）— 中文前端学习网站</li>
+      <li><strong>FreeCodeCamp</strong>（freecodecamp.org）— 免费的编程学习平台</li>
+    </ul>
+
+    <h2>下一步计划</h2>
+    <p>接下来，我准备：</p>
+    <ol>
+      <li>深入学习 CSS 布局（Flexbox 和 Grid）</li>
+      <li>了解 JavaScript 的 DOM 操作</li>
+      <li>学习使用 Git 进行版本管理</li>
+      <li>把博客部署到 GitHub Pages 上</li>
+    </ol>
+
+    <p>感谢你的阅读！如果你也在学习建站，欢迎一起交流。</p>
+
+    <!-- 返回首页链接 -->
+    <p style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e9ecef;">
+      <a href="index.html">&larr; 返回首页</a>
+    </p>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2026 我的博客. 用 &#10084; 和代码构建</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

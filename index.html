@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  index.html - 博客首页
+  ============================================================
+  这是你网站的"大门"，用户访问你的网址时第一个看到的页面。
+  
+  HTML 基础知识：
+  - HTML 用"标签"来组织内容，标签成对出现：<标签>内容</标签>
+  - 标签可以嵌套：<外层><内层>内容</内层></外层>
+  - 标签可以有属性：<标签 属性="值">内容</标签>
+  ============================================================
+-->
+<html lang="zh-CN">
+<!-- lang="zh-CN" 告诉浏览器这是中文网页 -->
+
+<head>
+  <!--
+    <head> 区域：网页的"元信息"，用户看不到，但浏览器需要
+    包括：标题、编码、样式文件链接等
+  -->
+  
+  <!-- 字符编码：UTF-8 支持中文和各种语言 -->
+  <meta charset="UTF-8">
+  
+  <!-- 响应式设计：让网页在手机上也能正常显示 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO：搜索引擎看到的网页描述 -->
+  <meta name="description" content="这是我的个人博客，记录学习和生活">
+  
+  <!-- 网页标题：显示在浏览器标签页上 -->
+  <title>我的博客 - 首页</title>
+  
+  <!-- 引入外部 CSS 样式文件（稍后创建） -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- 引入 Google Fonts 中文字体（可选，让字体更好看） -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!--
+    <body> 区域：网页的"可见内容"，用户实际看到的所有东西
+  -->
+
+  <!-- ==================== 导航栏 ==================== -->
+  <!--
+    <nav> 是语义化标签，表示"导航区域"
+    语义化标签的好处：
+    1. 代码更易读
+    2. 搜索引擎更容易理解网页结构
+    3. 无障碍访问（屏幕阅读器能识别）
+  -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <!-- 博客 Logo / 名称 -->
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">&#9997;</span> <!-- ✍ 这是一个 HTML 实体字符 -->
+        我的博客
+      </a>
+      
+      <!-- 导航链接 -->
+      <ul class="nav-links">
+        <!--
+          <ul> = 无序列表 (Unordered List)
+          <li> = 列表项 (List Item)
+          <a>  = 超链接 (Anchor)，href 是链接地址
+        -->
+        <li><a href="index.html" class="active">首页</a></li>
+        <li><a href="about.html">关于我</a></li>
+        <li><a href="https://github.com" target="_blank">GitHub</a></li>
+        <!-- target="_blank" 表示在新标签页打开 -->
+      </ul>
+
+      <!-- 移动端汉堡菜单按钮（手机上显示） -->
+      <button class="nav-toggle" aria-label="打开菜单">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== 顶部横幅区域 ==================== -->
+  <!--
+    <header> 语义化标签，表示"页头区域"
+  -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">你好，欢迎来到我的博客</h1>
+      <!--
+        <h1> 到 <h6> 是标题标签，数字越小级别越高
+        每个页面应该只有一个 <h1>
+      -->
+      <p class="hero-subtitle">在这里，我分享技术学习笔记、生活感悟和有趣的发现</p>
+      <a href="#posts" class="hero-btn">开始阅读 &#8595;</a>
+      <!-- ↓ 是向下箭头的 HTML 实体 -->
+    </div>
+  </header>
+
+  <!-- ==================== 博客文章列表 ==================== -->
+  <!--
+    <main> 语义化标签，表示页面的"主要内容"
+    <section> 表示一个独立的内容区块
+    <article> 表示一篇独立的文章/内容
+  -->
+  <main class="container">
+    <section id="posts" class="posts-section">
+      <h2 class="section-title">最新文章</h2>
+      
+      <div class="posts-grid">
+        <!-- 文章卡片 1 -->
+        <article class="post-card">
+          <div class="post-card-image">
+            <!-- 
+              这里用 CSS 渐变色代替图片
+              实际使用时可以替换为真实图片：
+              <img src="images/post1.jpg" alt="文章配图描述">
+            -->
+            <div class="placeholder-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+              <span>&#128187;</span> <!-- 💻 -->
+            </div>
+          </div>
+          <div class="post-card-content">
+            <div class="post-meta">
+              <!--
+                <time> 语义化标签，表示日期/时间
+                datetime 属性是机器可读的日期格式
+              -->
+              <time datetime="2026-02-14">2026年2月14日</time>
+              <span class="post-tag">学习笔记</span>
+            </div>
+            <h3><a href="post.html">我的第一篇博客：从零开始学建站</a></h3>
+            <p>今天开始了我的建站之旅！在这篇文章中，我会记录从零开始搭建个人博客的全过程...</p>
+            <a href="post.html" class="read-more">阅读全文 &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 文章卡片 2 -->
+        <article class="post-card">
+          <div class="post-card-image">
+            <div class="placeholder-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+              <span>&#127912;</span> <!-- 🎨 -->
+            </div>
+          </div>
+          <div class="post-card-content">
+            <div class="post-meta">
+              <time datetime="2026-02-13">2026年2月13日</time>
+              <span class="post-tag">CSS</span>
+            </div>
+            <h3><a href="#">CSS 入门：让网页变得好看</a></h3>
+            <p>学习 CSS 的基本概念，包括选择器、盒模型、Flexbox 布局等核心知识...</p>
+            <a href="#" class="read-more">阅读全文 &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 文章卡片 3 -->
+        <article class="post-card">
+          <div class="post-card-image">
+            <div class="placeholder-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+              <span>&#9889;</span> <!-- ⚡ -->
+            </div>
+          </div>
+          <div class="post-card-content">
+            <div class="post-meta">
+              <time datetime="2026-02-12">2026年2月12日</time>
+              <span class="post-tag">JavaScript</span>
+            </div>
+            <h3><a href="#">JavaScript 让网页动起来</a></h3>
+            <p>JavaScript 是网页交互的核心。学习变量、函数、DOM 操作等基础概念...</p>
+            <a href="#" class="read-more">阅读全文 &rarr;</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== 页脚 ==================== -->
+  <!--
+    <footer> 语义化标签，表示"页脚"
+    通常放版权信息、联系方式、社交链接等
+  -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2026 我的博客. 用 &#10084; 和代码构建</p>
+      <!-- &copy; = ©  ❤ = 爱心 -->
+      <p class="footer-links">
+        <a href="https://github.com" target="_blank">GitHub</a>
+        <a href="mailto:your-email@example.com">邮箱</a>
+        <!-- mailto: 前缀会打开邮件客户端 -->
+      </p>
+    </div>
+  </footer>
+
+  <!-- 引入 JavaScript 文件（放在 body 底部，确保 HTML 先加载完） -->
+  <script src="script.js"></script>
+</body>
+</html>
