@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import GiscusComments from '../../components/GiscusComments.astro';
 import { t } from '../../i18n/utils';
 
 const lang = 'zh' as const;
@@ -50,6 +51,8 @@ const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIc
         <Content />
       </div>
     </article>
+
+    <GiscusComments lang={lang} />
 
     <div class="nav-container">
       <div class="chessboard-divider"></div>

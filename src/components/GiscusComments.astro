@@ -1,0 +1,93 @@
+---
+import type { Lang } from '../i18n/translations';
+import { t } from '../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const giscusLang = lang === 'en' ? 'en' : 'zh-CN';
+---
+
+<section class="comments-section">
+  <div class="chessboard-divider"></div>
+  <h2 class="comments-title">{t(lang, 'comments.title')}</h2>
+
+  <div class="giscus-wrapper">
+    <script
+      src="https://giscus.app/client.js"
+      data-repo="wz66216/wz66216.github.io"
+      data-repo-id="R_kgDORQMrpg"
+      data-category="Announcements"
+      data-category-id="DIC_kwDORQMrps4C2eCg"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang={giscusLang}
+      crossorigin="anonymous"
+      async
+    ></script>
+  </div>
+</section>
+
+<!-- Theme sync: notify giscus iframe when site theme changes -->
+<script>
+  function syncGiscusTheme() {
+    const theme = document.documentElement.getAttribute('data-theme');
+    const giscusTheme = theme === 'dark' ? 'dark' : 'light';
+
+    const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    if (iframe) {
+      iframe.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme: giscusTheme } } },
+        'https://giscus.app'
+      );
+    }
+  }
+
+  // Watch for theme attribute changes
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.attributeName === 'data-theme') {
+        syncGiscusTheme();
+      }
+    }
+  });
+
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
+
+  // Initial sync once giscus loads
+  window.addEventListener('message', (event) => {
+    if (event.origin !== 'https://giscus.app') return;
+    if (typeof event.data !== 'object' || !event.data.giscus) return;
+    // giscus is ready, sync theme
+    syncGiscusTheme();
+  });
+</script>
+
+<style>
+  .comments-section {
+    max-width: 720px;
+    margin: 0 auto;
+    margin-top: var(--space-xl);
+  }
+
+  .comments-title {
+    font-family: var(--font-title);
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin-bottom: var(--space-lg);
+    letter-spacing: 0.02em;
+  }
+
+  .giscus-wrapper {
+    min-height: 150px;
+  }
+</style>

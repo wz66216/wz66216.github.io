@@ -67,6 +67,9 @@ export const translations = {
     "blog.prev": "← 上一篇",
     "blog.next": "下一篇 →",
 
+    // Comments
+    "comments.title": "评论 / COMMENTS",
+
     // Footer
     "footer.copyright": "© 2026 Wang Zhai",
 
@@ -136,6 +139,9 @@ export const translations = {
     "blog.back": "← Back to blog",
     "blog.prev": "← Previous",
     "blog.next": "Next →",
+
+    // Comments
+    "comments.title": "COMMENTS",
 
     // Footer
     "footer.copyright": "© 2026 Wang Zhai",

@@ -66,6 +66,18 @@
   - `src/pages/en/blog/[...slug].astro` — 英文博客详情（标题/描述用英文翻译，内容保持中文）
 - 构建通过：12 页面（6中文 + 6英文）全部生成成功
 
+### 阶段八：Giscus 评论系统
+- 通过 GitHub API 和 Giscus API 获取配置参数：`repo-id`（R_kgDORQMrpg）、`category-id`（DIC_kwDORQMrps4C2eCg，Announcements 分类）
+- 创建 `src/components/GiscusComments.astro`：
+  - 接受 `lang` prop，根据语言切换 `data-lang`（zh-CN / en）
+  - 使用 `data-mapping="pathname"` 按路径匹配评论
+  - 棋盘分割线 + "评论 / COMMENTS" 标题
+  - 主题同步：通过 MutationObserver 监听 `data-theme` 变化，用 postMessage 通知 giscus iframe 切换亮/暗主题
+- 在 `src/i18n/translations.ts` 中添加 `comments.title` 翻译键（中文："评论 / COMMENTS"，英文："COMMENTS"）
+- 嵌入到中文博客详情页 `src/pages/blog/[...slug].astro`（文章内容与导航之间）
+- 嵌入到英文博客详情页 `src/pages/en/blog/[...slug].astro`（同上）
+- 构建通过：12 页面，6 篇博客详情页均包含 giscus 评论组件
+
 ---
 
-**当前状态**：i18n 路由级双语完成（12页面），待 Cloudflare Pages 部署
+**当前状态**：Giscus 评论系统集成完成（12页面），待 Cloudflare Pages 部署
