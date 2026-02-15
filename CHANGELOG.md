@@ -78,6 +78,11 @@
 - 嵌入到英文博客详情页 `src/pages/en/blog/[...slug].astro`（同上）
 - 构建通过：12 页面，6 篇博客详情页均包含 giscus 评论组件
 
+### 阶段九：Cloudflare Pages 部署
+- 修复构建错误：Cloudflare Pages Root directory 配置错误（`my-blog` → 留空），仓库根目录即为项目根目录
+- 构建配置：Build command = `npm run build`，Build output directory = `dist`，Root directory = `/`（留空）
+- 部署成功：`https://thu-wangzhai.pages.dev` 上线
+
 ---
 
-**当前状态**：Giscus 评论系统集成完成（12页面），待 Cloudflare Pages 部署
+**当前状态**：网站已上线，含 12 页面（6中文 + 6英文）、Giscus 评论系统、亮/暗主题、棋盘动效
