@@ -1,0 +1,72 @@
+---
+import { t, type Lang, defaultLang } from '../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = defaultLang } = Astro.props;
+---
+
+<section id="about">
+  <div class="container animate-on-scroll">
+    <h2>{t(lang, 'about.section.title')}</h2>
+    <div class="chessboard-divider" role="separator"></div>
+    
+    <div class="content">
+      <p>
+        {t(lang, 'about.section.p1')}
+      </p>
+      <p>
+        {t(lang, 'about.section.p2')}
+      </p>
+      <p>
+        {t(lang, 'about.section.p3')}
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  #about {
+    padding: var(--space-2xl) var(--space-lg);
+    background-color: var(--color-bg-white);
+    color: var(--color-text-secondary);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h2 {
+    font-family: var(--font-title);
+    font-weight: 900;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+  }
+
+  .content {
+    max-width: 720px;
+  }
+
+  p {
+    font-family: var(--font-main);
+    line-height: 1.8;
+    margin-bottom: var(--space-md);
+    font-size: 1rem;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    #about {
+      padding: var(--space-xl) var(--space-md);
+    }
+  }
+</style>

@@ -1,0 +1,125 @@
+---
+import { t, type Lang, defaultLang } from '../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = defaultLang } = Astro.props;
+
+const skills = [
+  { piece: "♚", rank: t(lang, 'rank.core'), name: t(lang, 'skills.chess.name'), desc: t(lang, 'skills.chess.desc') },
+  { piece: "♚", rank: t(lang, 'rank.core'), name: t(lang, 'skills.physics.name'), desc: t(lang, 'skills.physics.desc') },
+  { piece: "♛", rank: t(lang, 'rank.expert'), name: t(lang, 'skills.python.name'), desc: t(lang, 'skills.python.desc') },
+  { piece: "♛", rank: t(lang, 'rank.expert'), name: t(lang, 'skills.latex.name'), desc: t(lang, 'skills.latex.desc') },
+  { piece: "♜", rank: t(lang, 'rank.advanced'), name: t(lang, 'skills.data.name'), desc: t(lang, 'skills.data.desc') },
+  { piece: "♝", rank: t(lang, 'rank.intermediate'), name: t(lang, 'skills.web.name'), desc: t(lang, 'skills.web.desc') },
+  { piece: "♞", rank: t(lang, 'rank.beginner'), name: t(lang, 'skills.ml.name'), desc: t(lang, 'skills.ml.desc') }
+];
+---
+
+<section id="skills">
+  <div class="container animate-on-scroll">
+    <h2>{t(lang, 'skills.title')}</h2>
+    <div class="chessboard-divider" role="separator"></div>
+    
+    <div class="skills-grid">
+      {skills.map((skill, index) => (
+        <div class="skill-card animate-drop" style={`--stagger: ${index}`}>
+          <div class="card-header">
+            <span class="piece">{skill.piece}</span>
+            <span class="rank">{skill.rank}</span>
+          </div>
+          <h3 class="name">{skill.name}</h3>
+          <p class="desc">{skill.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  #skills {
+    padding: var(--space-2xl) var(--space-lg);
+    background-color: var(--color-section-dark-bg);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h2 {
+    font-family: var(--font-title);
+    font-weight: 900;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: var(--color-section-dark-text);
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+
+  .skill-card {
+    border: 1px solid var(--color-section-dark-border);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+  }
+
+  .piece {
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--color-section-dark-text);
+  }
+
+  .rank {
+    font-family: var(--font-code);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-section-dark-muted);
+  }
+
+  .name {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: var(--space-xs);
+    color: var(--color-section-dark-text);
+  }
+
+  .desc {
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    color: var(--color-section-dark-muted);
+    line-height: 1.5;
+  }
+
+  /* Responsive Grid */
+  @media (max-width: 1023px) {
+    .skills-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    #skills {
+      padding: var(--space-xl) var(--space-md);
+    }
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,35 @@
+---
+import { t, type Lang, defaultLang } from '../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = defaultLang } = Astro.props;
+---
+
+<footer>
+  <div class="chessboard-divider" role="separator"></div>
+  <div class="content">
+    <p>{t(lang, 'footer.copyright')}</p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    padding-bottom: var(--space-lg);
+    background-color: var(--color-bg-white);
+    color: var(--color-text-secondary);
+  }
+
+  /* Divider spacing */
+  .chessboard-divider {
+    margin-bottom: var(--space-lg);
+  }
+
+  .content {
+    text-align: center;
+    font-size: 0.85rem;
+    font-family: var(--font-main);
+  }
+</style>

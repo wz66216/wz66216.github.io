@@ -1,0 +1,73 @@
+---
+import Sidebar from '../components/Sidebar.astro';
+import '../styles/global.css';
+import { type Lang, defaultLang } from '../i18n/utils';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: Lang;
+}
+
+const { title, description = "Wang Zhai - Physics Student & Chess Player", lang = defaultLang } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={lang === 'en' ? 'en' : 'zh-CN'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+    <script is:inline>
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    </script>
+  </head>
+  <body>
+    <Sidebar lang={lang} currentPath={Astro.url.pathname} />
+    <main class="main-content">
+      <slot />
+    </main>
+    <style>
+      .main-content {
+        margin-left: 240px;
+        min-height: 100vh;
+        transition: margin-left 0.3s ease;
+      }
+      
+      @media (max-width: 768px) {
+        .main-content {
+          margin-left: 0;
+          padding-top: 60px; /* Space for mobile toggle */
+        }
+      }
+    </style>
+    <script>
+      // Scroll Entrance Animations
+      document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.15 // Trigger when 15% visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target); // Play once
+            }
+          });
+        }, observerOptions);
+
+        const animatedElements = document.querySelectorAll('.animate-on-scroll, .animate-drop, .animate-knight');
+        animatedElements.forEach(el => observer.observe(el));
+      });
+    </script>
+  </body>
+</html>

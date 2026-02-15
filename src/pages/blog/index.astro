@@ -1,0 +1,229 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { t } from '../../i18n/utils';
+
+const lang = 'zh' as const;
+
+const posts = await getCollection('blog');
+const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const categoryIcons = {
+  "物理笔记": "♜",
+  "国际象棋": "♞",
+  "随笔": "♝"
+};
+---
+
+<BaseLayout title="博客 | Wang Zhai" lang={lang}>
+  <div class="blog-container">
+    <h1 class="page-title">{t(lang, 'blog.page.title')}</h1>
+    <div class="chessboard-divider"></div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" data-category="all">{t(lang, 'blog.filter.all')}</button>
+      <button class="filter-btn" data-category="物理笔记">{t(lang, 'blog.filter.physics')}</button>
+      <button class="filter-btn" data-category="国际象棋">{t(lang, 'blog.filter.chess')}</button>
+      <button class="filter-btn" data-category="随笔">{t(lang, 'blog.filter.essay')}</button>
+    </div>
+
+    <div class="posts-grid">
+      {sortedPosts.map((post) => (
+        <a href={`/blog/${post.id}`} class="post-card" data-category={post.data.category}>
+          <div class="card-content">
+            <h2 class="post-title">{post.data.title}</h2>
+            <div class="meta">
+              <span class="date">{post.data.date.toISOString().split('T')[0]}</span>
+              <span class="separator">·</span>
+              <span class="category">
+                <span class="icon">{categoryIcons[post.data.category as keyof typeof categoryIcons]}</span>
+                {post.data.category}
+              </span>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.post-card');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const category = btn.getAttribute('data-category');
+
+      cards.forEach(card => {
+        const cardEl = card as HTMLElement;
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          cardEl.style.display = 'block';
+        } else {
+          cardEl.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .blog-container {
+    padding: var(--space-xl) var(--space-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .page-title {
+    font-family: var(--font-title);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 900;
+    margin-bottom: var(--space-lg);
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-xl);
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: var(--space-xs) var(--space-md);
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-text-primary);
+  }
+
+  .filter-btn.active {
+    background: var(--color-accent);
+    color: var(--color-inverse);
+    border-color: var(--color-accent);
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--color-border);
+  }
+
+  .post-card {
+    display: block;
+    padding: var(--space-lg);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid var(--color-border);
+    /* Default to white/light */
+    background-color: var(--color-bg-white);
+    color: var(--color-text-primary);
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+  }
+
+  .post-title {
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+    color: inherit;
+  }
+
+  .meta {
+    font-family: var(--font-code);
+    font-size: 0.9rem;
+    color: inherit;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .separator {
+    opacity: 0.5;
+  }
+
+  /* Chessboard Logic from BlogSection.astro */
+  
+  /* Mobile (1 column) */
+  @media (max-width: 767px) {
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .post-card:nth-child(odd) {
+      background-color: var(--color-bg-white);
+      color: var(--color-text-primary);
+    }
+    
+    .post-card:nth-child(even) {
+      background-color: var(--color-section-dark-bg);
+      color: var(--color-section-dark-text);
+    }
+
+    .post-card:nth-child(odd):hover {
+      background-color: var(--color-section-dark-bg);
+      color: var(--color-section-dark-text);
+    }
+
+    .post-card:nth-child(even):hover {
+      background-color: var(--color-bg-white);
+      color: var(--color-text-primary);
+    }
+  }
+
+  /* Desktop (2 columns) */
+  @media (min-width: 768px) {
+    .posts-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* 
+      Pattern:
+      W B
+      B W
+      ...
+    */
+    .post-card:nth-child(4n+1),
+    .post-card:nth-child(4n+4) {
+      background-color: var(--color-bg-white);
+      color: var(--color-text-primary);
+    }
+
+    .post-card:nth-child(4n+2),
+    .post-card:nth-child(4n+3) {
+      background-color: var(--color-section-dark-bg);
+      color: var(--color-section-dark-text);
+    }
+
+    /* Hover effects */
+    /* White -> Dark */
+    .post-card:nth-child(4n+1):hover,
+    .post-card:nth-child(4n+4):hover {
+      background-color: var(--color-section-dark-bg);
+      color: var(--color-section-dark-text);
+    }
+
+    /* Dark -> White */
+    .post-card:nth-child(4n+2):hover,
+    .post-card:nth-child(4n+3):hover {
+      background-color: var(--color-bg-white);
+      color: var(--color-text-primary);
+    }
+  }
+</style>

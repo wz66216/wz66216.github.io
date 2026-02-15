@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import { t } from '../i18n/utils';
+
+const lang = 'zh' as const;
+---
+
+<BaseLayout title="关于 / About - Wang Zhai" lang={lang}>
+  <div class="about-page">
+    <header class="page-header">
+      <h1>{t(lang, 'about.page.title')}</h1>
+      <div class="chessboard-divider" role="separator"></div>
+    </header>
+
+    <div class="about-content">
+      <section class="intro">
+        <p>{t(lang, 'about.intro.1')}</p>
+        <p>{t(lang, 'about.intro.2')}</p>
+        <p>{t(lang, 'about.intro.3')}</p>
+      </section>
+
+      <div class="chessboard-divider" role="separator"></div>
+
+      <section class="details">
+        <h2>{t(lang, 'about.physics.title')}</h2>
+        <p>{t(lang, 'about.physics.desc')}</p>
+      </section>
+
+      <section class="details">
+        <h2>{t(lang, 'about.chess.title')}</h2>
+        <p>{t(lang, 'about.chess.desc')}</p>
+      </section>
+
+      <section class="details">
+        <h2>{t(lang, 'about.more.title')}</h2>
+        <p>{t(lang, 'about.more.desc')}</p>
+      </section>
+
+      <div class="chessboard-divider" role="separator"></div>
+
+      <section class="contact">
+        <h2>{t(lang, 'about.contact.title')}</h2>
+        <ul class="contact-list">
+          <li>
+            <span class="contact-label">{t(lang, 'about.contact.email')}</span>
+            <a href="mailto:wangzhai@example.com" class="contact-value">wangzhai@example.com</a>
+          </li>
+          <li>
+            <span class="contact-label">{t(lang, 'about.contact.github')}</span>
+            <a href="https://github.com/wz66216" class="contact-value" target="_blank" rel="noopener noreferrer">github.com/wz66216</a>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+  <Footer lang={lang} />
+</BaseLayout>
+
+<style>
+  .about-page {
+    padding: var(--space-xl) var(--space-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .page-header h1 {
+    font-family: var(--font-title);
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+
+  .about-content {
+    max-width: 720px;
+  }
+
+  .intro p {
+    font-family: var(--font-main);
+    line-height: 1.8;
+    margin-bottom: var(--space-md);
+    font-size: 1.05rem;
+    color: var(--color-text-primary);
+  }
+
+  .intro p:last-child {
+    margin-bottom: 0;
+  }
+
+  .details {
+    margin-bottom: var(--space-xl);
+  }
+
+  .details h2 {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+  }
+
+  .details p {
+    font-family: var(--font-main);
+    line-height: 1.8;
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+  }
+
+  .contact {
+    margin-top: var(--space-lg);
+  }
+
+  .contact h2 {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+  }
+
+  .contact-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .contact-list li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .contact-label {
+    font-family: var(--font-code);
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .contact-value {
+    font-family: var(--font-main);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .contact-value:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .about-page {
+      padding: var(--space-xl) var(--space-md);
+    }
+  }
+</style>
