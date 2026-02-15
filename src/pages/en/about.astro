@@ -6,7 +6,7 @@ import { t } from '../../i18n/utils';
 const lang = 'en' as const;
 ---
 
-<BaseLayout title="About - Wang Zhai" lang={lang}>
+<BaseLayout title="About - WangZhai" lang={lang}>
   <div class="about-page">
     <header class="page-header">
       <h1>{t(lang, 'about.page.title')}</h1>
@@ -14,6 +14,10 @@ const lang = 'en' as const;
     </header>
 
     <div class="about-content">
+      <div class="avatar-section">
+        <div class="avatar-placeholder">♚</div>
+      </div>
+
       <section class="intro">
         <p>{t(lang, 'about.intro.1')}</p>
         <p>{t(lang, 'about.intro.2')}</p>
@@ -44,7 +48,7 @@ const lang = 'en' as const;
         <ul class="contact-list">
           <li>
             <span class="contact-label">{t(lang, 'about.contact.email')}</span>
-            <a href="mailto:wangzhai@example.com" class="contact-value">wangzhai@example.com</a>
+            <a href="mailto:wd24@mails.tsinghua.edu.cn" class="contact-value">wd24@mails.tsinghua.edu.cn</a>
           </li>
           <li>
             <span class="contact-label">{t(lang, 'about.contact.github')}</span>
@@ -166,5 +170,24 @@ const lang = 'en' as const;
     .about-page {
       padding: var(--space-xl) var(--space-md);
     }
+  }
+
+  .avatar-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-xl);
+  }
+
+  .avatar-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: var(--color-bg-black);
+    border: 3px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--color-text-secondary);
   }
 </style>

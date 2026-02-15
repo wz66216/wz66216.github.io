@@ -83,6 +83,16 @@
 - 构建配置：Build command = `npm run build`，Build output directory = `dist`，Root directory = `/`（留空）
 - 部署成功：`https://thu-wangzhai.pages.dev` 上线
 
+### 阶段十：个人信息完善
+- 更新姓名显示：Hero 标题 "WANG ZHAI" → "WANGZHAI"，关于页标题加入中文名"王翟"
+- 更新学校信息：清华大学物理学专业大二，体现在首页 Hero 副标题、关于简介、详细介绍中
+- 更新研究方向：从"理论物理、量子场论、统计力学、数学物理"→ "AI for Science"
+- 更新棋力等级：从"准专业级棋手"→ "国家二级运动员"
+- 更新开局偏好：新增"新印度防御（黑方）"和"阿拉平变例（白方）"
+- 更新联系邮箱：`wangzhai@example.com` → `wd24@mails.tsinghua.edu.cn`
+- 关于页新增头像占位符（♚ 棋王图标，圆形），待替换为真实照片
+- 中英文翻译同步更新（`translations.ts` 中 zh/en 两套文案）
+
 ---
 
-**当前状态**：网站已上线，含 12 页面（6中文 + 6英文）、Giscus 评论系统、亮/暗主题、棋盘动效
+**当前状态**：个人信息已完善，网站已上线 `https://thu-wangzhai.pages.dev`
