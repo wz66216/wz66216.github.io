@@ -93,6 +93,18 @@
 - 关于页新增头像占位符（♚ 棋王图标，圆形），待替换为真实照片
 - 中英文翻译同步更新（`translations.ts` 中 zh/en 两套文案）
 
+### 阶段十一：博客搜索功能
+- 创建 `src/components/SearchBar.astro`：♚图标装饰输入框，棋盘风格边框（focus 时 accent 色 + box-shadow），CSS 变量驱动
+- 更新 `src/i18n/translations.ts`：新增 `search.placeholder`、`search.no.results`、`search.no.results.hint` 中英翻译键
+- 重写 `src/pages/blog/index.astro`（中文博客列表）：
+  - frontmatter 中构建 searchData（标题/摘要/正文前500字 strip markdown 后注入 `window.__searchData`）
+  - 搜索 + 分类筛选可叠加的 `filterPosts()` 逻辑
+  - 关键词高亮（匹配文字 `font-weight:900` + underline）
+  - 搜索/过滤后 JS 动态重算棋盘色（`.chess-white`/`.chess-dark` class），解决 CSS `nth-child` 不跳过 hidden 元素的问题
+  - 空结果友好提示（♚图标 + i18n 文本）
+- 重写 `src/pages/en/blog/index.astro`（英文博客列表）：与中文版对应
+- 构建通过：12 页面，零错误
+
 ---
 
-**当前状态**：个人信息已完善，网站已上线 `https://thu-wangzhai.pages.dev`
+**当前状态**：博客搜索功能已实现，网站已上线 `https://thu-wangzhai.pages.dev`
