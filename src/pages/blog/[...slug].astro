@@ -45,6 +45,12 @@ const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIc
         </div>
       </header>
 
+
+        {post.data.pdf && (
+          <a href={post.data.pdf} class="pdf-download" target="_blank" rel="noopener noreferrer">
+            {t(lang, 'blog.download.pdf')}
+          </a>
+        )}
       <div class="chessboard-divider"></div>
 
       <div class="content">
@@ -126,6 +132,22 @@ const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIc
     opacity: 0.5;
   }
 
+
+  .pdf-download {
+    display: inline-block;
+    margin-top: var(--space-sm);
+    padding: var(--space-xs) var(--space-md);
+    font-family: var(--font-code);
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .pdf-download:hover {
+    background: var(--color-bg-black);
+  }
   .content {
     margin-top: var(--space-lg);
     font-family: var(--font-main);

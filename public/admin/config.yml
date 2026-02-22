@@ -1,0 +1,93 @@
+# Decap CMS Configuration for WangZhai Blog
+# Docs: https://decapcms.org/docs/configuration-options/
+
+backend:
+  name: github
+  repo: wz66216/wz66216.github.io
+  branch: main
+  base_url: https://decap-auth-wangzhai.1509639424.workers.dev
+  auth_endpoint: /auth
+
+# Media / file uploads
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+# Locale
+locale: "zh_Hans"
+
+# Slug settings
+slug:
+  encoding: "unicode"
+  clean_accents: false
+
+collections:
+  - name: "blog"
+    label: "博客文章"
+    label_singular: "文章"
+    folder: "src/content/blog"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    sortable_fields:
+      - field: date
+        default_sort: desc
+      - title
+    view_filters:
+      - label: "物理笔记"
+        field: category
+        pattern: "物理笔记"
+      - label: "国际象棋"
+        field: category
+        pattern: "国际象棋"
+      - label: "随笔"
+        field: category
+        pattern: "随笔"
+    fields:
+      - label: "标题"
+        name: "title"
+        widget: "string"
+        hint: "中文标题（必填）"
+      - label: "English Title"
+        name: "title_en"
+        widget: "string"
+        required: false
+        hint: "英文标题（可选，留空则英文页面显示中文标题）"
+      - label: "发布日期"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+      - label: "分类"
+        name: "category"
+        widget: "select"
+        options:
+          - label: "物理笔记 ♜"
+            value: "物理笔记"
+          - label: "国际象棋 ♞"
+            value: "国际象棋"
+          - label: "随笔 ♝"
+            value: "随笔"
+      - label: "摘要"
+        name: "description"
+        widget: "text"
+        hint: "中文摘要（必填，显示在卡片和搜索结果中）"
+      - label: "English Description"
+        name: "description_en"
+        widget: "text"
+        required: false
+        hint: "英文摘要（可选）"
+      - label: "附件 PDF"
+        name: "pdf"
+        widget: "file"
+        required: false
+        hint: "可上传 PDF 文件（如论文、讲义、棋谱等）"
+        media_library:
+          config:
+            max_file_size: 10240000
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+        hint: "支持 Markdown 格式，LaTeX 公式用 $..$ 或 $$..$$"

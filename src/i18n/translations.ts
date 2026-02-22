@@ -67,6 +67,7 @@ export const translations = {
     "blog.prev": "← 上一篇",
     "blog.next": "下一篇 →",
 
+    "blog.download.pdf": "📎 下载附件 PDF",
     // Search
     "search.placeholder": "搜索文章...",
     "search.no.results": "没有找到匹配的文章",
@@ -145,6 +146,7 @@ export const translations = {
     "blog.prev": "← Previous",
     "blog.next": "Next →",
 
+    "blog.download.pdf": "📎 Download PDF Attachment",
     // Search
     "search.placeholder": "Search posts...",
     "search.no.results": "No matching posts found",

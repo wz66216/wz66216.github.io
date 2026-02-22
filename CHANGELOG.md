@@ -107,4 +107,17 @@
 
 ---
 
-**当前状态**：博客搜索功能已实现，网站已上线 `https://thu-wangzhai.pages.dev`
+### 阶段十二：Decap CMS 可视化后台
+ 创建 `public/admin/index.html`：Decap CMS v3 管理界面入口（CDN 加载，纯静态）
+ 创建 `public/admin/config.yml`：完整 CMS 配置（GitHub backend、OAuth 代理、博客集合、字段定义、分类视图过滤器、PDF 上传）
+ 创建 `public/uploads/` 目录：用于存放上传的 PDF 和媒体文件
+ 更新 `src/content.config.ts`：schema 新增 `pdf: z.string().optional()` 字段
+ 更新 `src/i18n/translations.ts`：新增 `blog.download.pdf` 中英翻译键
+ 更新 `src/pages/blog/[...slug].astro`：条件渲染 PDF 下载链接 + `.pdf-download` 样式
+ 更新 `src/pages/en/blog/[...slug].astro`：英文版 PDF 下载链接
+ 认证方案：GitHub OAuth → Cloudflare Worker 代理（sterlingwes/decap-proxy）
+ 构建通过：12 页面，零错误
+
+---
+
+**当前状态**：Decap CMS 后台代码完成，等待 GitHub OAuth 配置 + Worker 部署后上线 `/admin`

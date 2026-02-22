@@ -10,6 +10,7 @@ const blog = defineCollection({
     category: z.enum(["物理笔记", "国际象棋", "随笔"]),
     description: z.string(),
     description_en: z.string().optional(),
+    pdf: z.string().optional(),
   }),
 });
 
