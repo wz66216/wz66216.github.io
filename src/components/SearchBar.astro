@@ -1,0 +1,75 @@
+---
+import type { Lang } from '../i18n/translations';
+import { t } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<div class="search-bar">
+  <span class="search-icon" aria-hidden="true">♚</span>
+  <input
+    type="search"
+    id="search-input"
+    placeholder={t(lang, 'search.placeholder')}
+    autocomplete="off"
+    spellcheck="false"
+  />
+</div>
+
+<style>
+  .search-bar {
+    position: relative;
+    margin-bottom: var(--space-lg);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: var(--space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    opacity: 0.4;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  #search-input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md) var(--space-sm) calc(var(--space-md) + 1.8rem);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    background: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    border-bottom: 3px solid var(--color-border);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #search-input::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+  }
+
+  #search-input:focus {
+    border-color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+    box-shadow: 0 2px 0 0 var(--color-accent);
+  }
+
+  /* Chessboard-style bottom border pattern on focus */
+  #search-input:focus + .search-focus-bar,
+  #search-input:focus {
+    border-bottom-style: solid;
+  }
+
+  /* Remove default search clear button styling in webkit */
+  #search-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+</style>

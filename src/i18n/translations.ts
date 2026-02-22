@@ -67,6 +67,11 @@ export const translations = {
     "blog.prev": "← 上一篇",
     "blog.next": "下一篇 →",
 
+    // Search
+    "search.placeholder": "搜索文章...",
+    "search.no.results": "没有找到匹配的文章",
+    "search.no.results.hint": "试试其他关键词？",
+
     // Comments
     "comments.title": "评论 / COMMENTS",
 
@@ -139,6 +144,11 @@ export const translations = {
     "blog.back": "← Back to blog",
     "blog.prev": "← Previous",
     "blog.next": "Next →",
+
+    // Search
+    "search.placeholder": "Search posts...",
+    "search.no.results": "No matching posts found",
+    "search.no.results.hint": "Try different keywords?",
 
     // Comments
     "comments.title": "COMMENTS",
