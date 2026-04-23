@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/Footer.astro';
+import TerminalContact from '../components/TerminalContact.astro';
 import { t } from '../i18n/utils';
 
 const lang = 'zh' as const;
@@ -43,19 +44,7 @@ const lang = 'zh' as const;
 
       <div class="chessboard-divider" role="separator"></div>
 
-      <section class="contact">
-        <h2>{t(lang, 'about.contact.title')}</h2>
-        <ul class="contact-list">
-          <li>
-            <span class="contact-label">{t(lang, 'about.contact.email')}</span>
-            <a href="mailto:wd24@mails.tsinghua.edu.cn" class="contact-value">wd24@mails.tsinghua.edu.cn</a>
-          </li>
-          <li>
-            <span class="contact-label">{t(lang, 'about.contact.github')}</span>
-            <a href="https://github.com/wz66216" class="contact-value" target="_blank" rel="noopener noreferrer">github.com/wz66216</a>
-          </li>
-        </ul>
-      </section>
+      <TerminalContact lang={lang} />
     </div>
   </div>
   <Footer lang={lang} />

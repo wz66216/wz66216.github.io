@@ -1,0 +1,180 @@
+---
+import { t } from '../i18n/utils';
+const { lang = 'zh' } = Astro.props;
+---
+
+<div class="terminal-wrapper" aria-label="Terminal Contact Section">
+  <div class="terminal">
+    <div class="terminal-header">
+      <span class="dot close"></span>
+      <span class="dot minimize"></span>
+      <span class="dot maximize"></span>
+    </div>
+    <div class="terminal-body">
+      <div class="line">
+        <span class="prompt">guest@wangzhai:~$</span> <span class="command">cat connect.txt</span>
+      </div>
+      <div class="output">
+        <ul class="contact-list">
+          <li>
+            <span class="key">[{t(lang, 'about.contact.email')}]</span>
+            <a href="mailto:wd24@mails.tsinghua.edu.cn">wd24@mails.tsinghua.edu.cn</a>
+          </li>
+          <li>
+            <span class="key">[{t(lang, 'about.contact.github')}]</span>
+            <a href="https://github.com/wz66216" target="_blank" rel="noopener noreferrer">github.com/wz66216</a>
+          </li>
+          <li>
+            <span class="key">[Location]</span>
+            <span>Tsinghua University, Beijing</span>
+          </li>
+        </ul>
+      </div>
+      <div class="line">
+        <span class="prompt">guest@wangzhai:~$</span><span class="cursor" aria-hidden="true">█</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .terminal-wrapper {
+    margin: var(--space-xl) 0;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .terminal {
+    width: 100%;
+    background: #111; /* Always dark for terminal */
+    border: 1px solid var(--color-border);
+    color: #f5f5f5;
+    font-family: var(--font-code);
+    font-size: 0.95rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Respect light mode borders if needed, but terminal itself stays dark */
+  :global([data-theme="light"]) .terminal {
+    border-color: #e0e0e0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  }
+
+  .terminal-header {
+    background: #222;
+    padding: 10px 16px;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #333;
+  }
+
+  :global([data-theme="light"]) .terminal-header {
+    background: #eee;
+    border-bottom-color: #ddd;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .close { background: #ff5f56; }
+  .minimize { background: #febc2e; }
+  .maximize { background: #28c840; }
+
+  /* Adjust dots for light mode to match macOS light theme */
+  :global([data-theme="light"]) .close { background: #ff5f56; border: 1px solid #e0443e; }
+  :global([data-theme="light"]) .minimize { background: #febc2e; border: 1px solid #d89f24; }
+  :global([data-theme="light"]) .maximize { background: #28c840; border: 1px solid #1aab29; }
+
+  .terminal-body {
+    padding: var(--space-md) var(--space-lg);
+    line-height: 1.6;
+  }
+
+  .line {
+    margin-bottom: var(--space-sm);
+  }
+
+  .prompt {
+    color: #6bdc9b; /* Hacker green */
+    font-weight: bold;
+    margin-right: var(--space-sm);
+  }
+
+  .command {
+    color: #fff;
+  }
+
+  .output {
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-md);
+    color: #ccc;
+  }
+
+  .contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .contact-list li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .key {
+    color: #888;
+    min-width: 100px;
+  }
+
+  .output a, .output span:not(.key) {
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px dashed #555;
+    transition: all 0.2s ease;
+  }
+
+  .output a:hover {
+    border-bottom-color: #fff;
+    color: #6bdc9b;
+  }
+
+  .cursor {
+    display: inline-block;
+    margin-left: 4px;
+    vertical-align: text-bottom;
+    color: #fff;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  @media (max-width: 768px) {
+    .terminal-body {
+      padding: var(--space-md);
+      font-size: 0.85rem;
+    }
+    
+    .contact-list li {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      animation: none;
+    }
+  }
+</style>

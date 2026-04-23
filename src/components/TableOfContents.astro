@@ -1,0 +1,159 @@
+---
+const { headings } = Astro.props;
+
+// Only include h2 and h3 for a cleaner table of contents
+const filteredHeadings = headings.filter((h: any) => h.depth === 2 || h.depth === 3);
+---
+
+{filteredHeadings.length > 0 && (
+  <aside class="toc-container">
+    <div class="toc-header">CONTENTS</div>
+    <nav id="toc" aria-label="Table of contents">
+      <ul class="toc-list">
+        {filteredHeadings.map((heading: any) => (
+          <li class={`toc-item depth-${heading.depth}`}>
+            <span class="chess-indicator" aria-hidden="true">♞</span>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </aside>
+)}
+
+<style>
+  .toc-container {
+    margin-bottom: var(--space-xl);
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-white);
+  }
+
+  /* When light mode is active, use the light bg */
+  :global([data-theme="light"]) .toc-container {
+    background-color: #fafafa;
+  }
+
+  .toc-header {
+    font-family: var(--font-code);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-sm);
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: flex-start;
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .toc-item.depth-3 {
+    margin-left: var(--space-md);
+  }
+
+  .chess-indicator {
+    display: inline-block;
+    width: 1.2rem;
+    opacity: 0; /* Hidden by default */
+    transform: translateX(-5px);
+    transition: all 0.2s ease;
+    color: var(--color-text-primary);
+  }
+
+  .toc-item a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .toc-item a:hover {
+    color: var(--color-text-primary);
+  }
+
+  /* Active State applied via JS */
+  .toc-item.active .chess-indicator {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .toc-item.active a {
+    color: var(--color-text-primary);
+    font-weight: 700;
+  }
+
+  /* Desktop Layout (Sticky positioning next to content) */
+  @media (min-width: 1024px) {
+    .toc-container {
+      position: sticky;
+      top: 2rem;
+      float: right;
+      width: 240px;
+      margin-left: var(--space-xl);
+      margin-bottom: 0;
+      /* Remove border/bg to blend with the white/dark squares smoothly */
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+    
+    :global([data-theme="light"]) .toc-container {
+      background: transparent;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chess-indicator {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function setupTOC() {
+    // Select all headings inside the article body
+    const headings = document.querySelectorAll('article h2, article h3');
+    const tocItems = document.querySelectorAll('.toc-item');
+    
+    if (!headings.length || !tocItems.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Remove active from all
+          tocItems.forEach(item => item.classList.remove('active'));
+          
+          // Find corresponding toc item
+          const id = entry.target.id;
+          const activeLink = document.querySelector(`.toc-item a[href="#${id}"]`);
+          if (activeLink && activeLink.parentElement) {
+            activeLink.parentElement.classList.add('active');
+          }
+        }
+      });
+    }, {
+      rootMargin: '0px 0px -80% 0px', // Trigger when heading reaches top 20% of screen
+      threshold: 1.0
+    });
+
+    headings.forEach(heading => observer.observe(heading));
+  }
+
+  // Setup on initial load
+  setupTOC();
+</script>
