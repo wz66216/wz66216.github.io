@@ -34,57 +34,61 @@ const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIc
 
 <BaseLayout title={post.data.title} description={post.data.description} lang={lang}>
   <div class="post-container">
-    <a href="/blog" class="back-link">{t(lang, 'blog.back')}</a>
-    
-    <article>
-      <header>
-        <h1 class="title">{post.data.title}</h1>
-        <div class="meta">
-          <time datetime={post.data.date.toISOString()}>{post.data.date.toISOString().split('T')[0]}</time>
-          <span class="separator">·</span>
-          <span class="category"><span class="icon">{categoryIcon}</span> {post.data.category}</span>
+    <div class="post-layout">
+      <aside class="post-sidebar">
+        <a href="/blog" class="back-link">{t(lang, 'blog.back')}</a>
+        <TableOfContents headings={headings} />
+      </aside>
+
+      <div class="post-main">
+        <article>
+          <header>
+            <h1 class="title">{post.data.title}</h1>
+            <div class="meta">
+              <time datetime={post.data.date.toISOString()}>{post.data.date.toISOString().split('T')[0]}</time>
+              <span class="separator">·</span>
+              <span class="category"><span class="icon">{categoryIcon}</span> {post.data.category}</span>
+            </div>
+          </header>
+
+          {post.data.pdf && (
+            <a href={post.data.pdf} class="pdf-download" target="_blank" rel="noopener noreferrer">
+              {t(lang, 'blog.download.pdf')}
+            </a>
+          )}
+          <div class="chessboard-divider"></div>
+
+          <div class="content">
+            <Content />
+          </div>
+        </article>
+
+        <GiscusComments lang={lang} />
+
+        <div class="nav-container">
+          <div class="chessboard-divider"></div>
+
+          <nav class="post-nav">
+            {prev ? (
+              <a href={`/blog/${prev.id}`} class="nav-link prev">
+                <span class="nav-label">{t(lang, 'blog.prev')}</span>
+                <span class="nav-title">{prev.data.title}</span>
+              </a>
+            ) : (
+              <div />
+            )}
+            
+            {next ? (
+              <a href={`/blog/${next.id}`} class="nav-link next">
+                <span class="nav-label">{t(lang, 'blog.next')}</span>
+                <span class="nav-title">{next.data.title}</span>
+              </a>
+            ) : (
+              <div />
+            )}
+          </nav>
         </div>
-      </header>
-
-
-        {post.data.pdf && (
-          <a href={post.data.pdf} class="pdf-download" target="_blank" rel="noopener noreferrer">
-            {t(lang, 'blog.download.pdf')}
-          </a>
-        )}
-      <div class="chessboard-divider"></div>
-
-      <TableOfContents headings={headings} />
-
-      <div class="content">
-        <Content />
       </div>
-    </article>
-
-    <GiscusComments lang={lang} />
-
-    <div class="nav-container">
-      <div class="chessboard-divider"></div>
-
-      <nav class="post-nav">
-        {prev ? (
-          <a href={`/blog/${prev.id}`} class="nav-link prev">
-            <span class="nav-label">{t(lang, 'blog.prev')}</span>
-            <span class="nav-title">{prev.data.title}</span>
-          </a>
-        ) : (
-          <div />
-        )}
-        
-        {next ? (
-          <a href={`/blog/${next.id}`} class="nav-link next">
-            <span class="nav-label">{t(lang, 'blog.next')}</span>
-            <span class="nav-title">{next.data.title}</span>
-          </a>
-        ) : (
-          <div />
-        )}
-      </nav>
     </div>
   </div>
 </BaseLayout>
@@ -94,6 +98,36 @@ const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIc
     padding: var(--space-xl) var(--space-lg);
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  .post-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-sidebar {
+    margin-bottom: var(--space-lg);
+  }
+
+  @media (min-width: 1024px) {
+    .post-layout {
+      flex-direction: row;
+      gap: var(--space-2xl);
+      align-items: flex-start;
+    }
+
+    .post-sidebar {
+      position: sticky;
+      top: 2rem;
+      width: 240px;
+      flex-shrink: 0;
+      margin-bottom: 0;
+    }
+
+    .post-main {
+      flex-grow: 1;
+      min-width: 0; /* Prevent flex overflow */
+    }
   }
 
   .back-link {
