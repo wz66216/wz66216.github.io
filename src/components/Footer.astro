@@ -11,7 +11,11 @@ const { lang = defaultLang } = Astro.props;
 <footer>
   <div class="chessboard-divider" role="separator"></div>
   <div class="content">
-    <p>{t(lang, 'footer.copyright')}</p>
+    <p>
+      {t(lang, 'footer.copyright')}
+      <span class="separator">|</span>
+      <a href="/admin/index.html" class="admin-link">{t(lang, 'footer.admin')}</a>
+    </p>
   </div>
 </footer>
 
@@ -31,5 +35,20 @@ const { lang = defaultLang } = Astro.props;
     text-align: center;
     font-size: 0.85rem;
     font-family: var(--font-main);
+  }
+
+  .separator {
+    margin: 0 var(--space-sm);
+    color: var(--color-border);
+  }
+
+  .admin-link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .admin-link:hover {
+    color: var(--color-primary);
   }
 </style>

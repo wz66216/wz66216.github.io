@@ -52,6 +52,130 @@
   --color-section-dark-border: #444444;
 }
 
+/* Cyberpunk Theme (Night City 2077) */
+[data-theme="cyberpunk"] {
+  --color-bg-white: #050A0E;
+  --color-bg-black: #09121A;
+  --color-text-primary: #FCEE0A; /* Neon Yellow */
+  --color-text-secondary: #00F0FF; /* Cyan */
+  --color-border: #FF003C; /* Neon Red */
+  --color-accent: #00F0FF;
+  --color-inverse: #000000;
+  
+  --color-section-dark-bg: #020406;
+  --color-section-dark-text: #FCEE0A;
+  --color-section-dark-muted: #00F0FF;
+  --color-section-dark-border: #FF003C;
+}
+
+/* --- Cyberpunk Specific Effects --- */
+[data-theme="cyberpunk"] h1, 
+[data-theme="cyberpunk"] h2, 
+[data-theme="cyberpunk"] h3,
+[data-theme="cyberpunk"] .king-circle {
+  text-shadow: 0 0 5px rgba(252, 238, 10, 0.5), 0 0 10px rgba(252, 238, 10, 0.3);
+}
+
+[data-theme="cyberpunk"] a:hover {
+  text-shadow: 0 0 8px var(--color-accent);
+}
+
+/* Glowing borders for specific UI elements */
+[data-theme="cyberpunk"] .control-btn,
+[data-theme="cyberpunk"] .action-btn,
+[data-theme="cyberpunk"] .king-circle {
+  box-shadow: 0 0 8px rgba(255, 0, 60, 0.4), inset 0 0 8px rgba(255, 0, 60, 0.2);
+}
+
+/* Cyberpunk Cut-corners effect for cards and buttons (disabling rounded borders) */
+[data-theme="cyberpunk"] .meta-card,
+[data-theme="cyberpunk"] .action-btn {
+  border-radius: 0 !important;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
+
+/* Cyberpunk Overrides: Hide/Replace Chess Elements */
+/* 1. Replace King Logo with Terminal Prompt */
+[data-theme="cyberpunk"] .king-circle {
+  color: transparent !important;
+  position: relative;
+  border-radius: 0;
+  text-shadow: none;
+}
+[data-theme="cyberpunk"] .king-circle::after {
+  content: ">_";
+  color: var(--color-text-primary);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-code);
+  font-size: 26px;
+  text-shadow: 0 0 5px rgba(252, 238, 10, 0.5), 0 0 10px rgba(252, 238, 10, 0.3);
+}
+
+/* 2. Replace Nav Chess Markers with Lightning */
+[data-theme="cyberpunk"] .chess-marker {
+  color: transparent;
+  position: relative;
+}
+[data-theme="cyberpunk"] .chess-marker::after {
+  content: "⚡";
+  color: var(--color-accent);
+  position: absolute;
+  left: 0;
+  font-size: 1.1rem;
+}
+
+/* 3. Replace Chessboard Divider with Neon Laser Line */
+[data-theme="cyberpunk"] .chessboard-divider {
+  background-image: none;
+  background-color: var(--color-border);
+  height: 2px;
+  opacity: 0.8;
+  box-shadow: 0 0 8px var(--color-border), 0 0 15px var(--color-border);
+}
+
+/* 4. Transform Hero Chessboard into Cyberpunk Pixel Wave */
+[data-theme="cyberpunk"] .chessboard-bg {
+  opacity: 0.6 !important;
+}
+
+[data-theme="cyberpunk"] .chessboard-bg .square {
+  background-color: var(--color-text-secondary) !important;
+  animation: pixelWave 3s infinite ease-in-out !important;
+  animation-delay: var(--delay) !important;
+  transform: scale(0.8);
+  border-radius: 0;
+}
+
+@keyframes pixelWave {
+  0%, 100% {
+    opacity: 0.05;
+    transform: scale(0.8) translateY(0);
+    background-color: var(--color-text-primary);
+    box-shadow: none;
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1) translateY(-15px);
+    background-color: var(--color-text-secondary);
+    box-shadow: 0 0 15px var(--color-text-secondary);
+  }
+}
+
+/* 5. Make section backgrounds slightly transparent so Matrix canvas shows through */
+[data-theme="cyberpunk"] #hero,
+[data-theme="cyberpunk"] #about,
+[data-theme="cyberpunk"] #skills,
+[data-theme="cyberpunk"] #blog,
+[data-theme="cyberpunk"] footer,
+[data-theme="cyberpunk"] .post-layout {
+  background-color: transparent !important;
+}
+
+
 html {
   font-family: var(--font-main);
   background-color: var(--color-bg-white);
@@ -89,6 +213,61 @@ code, pre {
   background-size: 16px 100%;
   opacity: 0.2;
   margin: var(--space-lg) 0;
+}
+
+/* =========================================
+   Focus Mode (Reader Mode)
+   ========================================= */
+body.focus-mode .sidebar {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.focus-mode .main-content {
+  margin-left: 0;
+  display: flex;
+  justify-content: center;
+}
+
+body.focus-mode .post-layout {
+  justify-content: center;
+}
+
+body.focus-mode .post-sidebar {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-20px);
+}
+
+/* Keep the meta sidebar visible but hide non-action cards */
+body.focus-mode .post-meta-sidebar .inspiration-card,
+body.focus-mode .post-meta-sidebar .license-card {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+}
+
+/* Make the action card stand out in focus mode */
+body.focus-mode .post-meta-sidebar .actions-card {
+  border-color: var(--color-text-primary);
+  box-shadow: 4px 4px 0px var(--color-border);
+  transform: translateY(-2px);
+}
+
+body.focus-mode .post-meta-sidebar .actions-card .action-btn#focus-mode-btn {
+  background: var(--color-text-primary);
+  color: var(--color-bg-white);
+}
+
+/* Focus mode transitions */
+.sidebar, .main-content, .post-sidebar, .post-meta-sidebar, .meta-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .container {

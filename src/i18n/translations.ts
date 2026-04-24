@@ -68,6 +68,11 @@ export const translations = {
     "blog.next": "下一篇 →",
 
     "blog.download.pdf": "📎 下载附件 PDF",
+    "blog.inspiration": "每日灵感 / INSPIRATION",
+    "blog.actions": "操作 / ACTIONS",
+    "blog.focusMode": "专注模式",
+    "blog.backToTop": "回到顶部",
+    "blog.adminPanel": "写作后台",
     // Search
     "search.placeholder": "搜索文章...",
     "search.no.results": "没有找到匹配的文章",
@@ -78,6 +83,7 @@ export const translations = {
 
     // Footer
     "footer.copyright": "© 2026 Wang Zhai",
+    "footer.admin": "写作后台 / ADMIN",
 
     // Rank labels
     "rank.core": "核心 / CORE",
@@ -147,6 +153,11 @@ export const translations = {
     "blog.next": "Next →",
 
     "blog.download.pdf": "📎 Download PDF Attachment",
+    "blog.inspiration": "INSPIRATION",
+    "blog.actions": "ACTIONS",
+    "blog.focusMode": "Focus Mode",
+    "blog.backToTop": "Back to Top",
+    "blog.adminPanel": "Writer Studio",
     // Search
     "search.placeholder": "Search posts...",
     "search.no.results": "No matching posts found",
@@ -157,6 +168,7 @@ export const translations = {
 
     // Footer
     "footer.copyright": "© 2026 Wang Zhai",
+    "footer.admin": "ADMIN",
 
     // Rank labels
     "rank.core": "CORE",

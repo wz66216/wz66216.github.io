@@ -25,7 +25,9 @@ const { title, description = "Wang Zhai - Physics Student & Chess Player", lang 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
     <script is:inline>
       const theme = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', theme);
+      const validThemes = ['light', 'dark', 'cyberpunk'];
+      const currentTheme = validThemes.includes(theme) ? theme : 'light';
+      document.documentElement.setAttribute('data-theme', currentTheme);
     </script>
   </head>
   <body>
@@ -68,6 +70,90 @@ const { title, description = "Wang Zhai - Physics Student & Chess Player", lang 
         const animatedElements = document.querySelectorAll('.animate-on-scroll, .animate-drop, .animate-knight');
         animatedElements.forEach(el => observer.observe(el));
       });
+    </script>
+
+    <!-- Cyberpunk Matrix Canvas -->
+    <canvas id="cyberpunk-matrix"></canvas>
+    <style>
+      #cyberpunk-matrix {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+      }
+      :global([data-theme="cyberpunk"]) #cyberpunk-matrix {
+        opacity: 0.12; /* Keeps text highly readable */
+      }
+    </style>
+    <script is:inline>
+      const canvas = document.getElementById('cyberpunk-matrix');
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+      
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ'.split('');
+      const fontSize = 16;
+      let columns = Math.floor(width / fontSize);
+      let drops = Array(columns).fill(1);
+      
+      let animationFrameId;
+      let isRunning = false;
+
+      function drawMatrix() {
+        ctx.fillStyle = 'rgba(5, 10, 14, 0.1)';
+        ctx.fillRect(0, 0, width, height);
+        ctx.font = fontSize + 'px "JetBrains Mono", monospace';
+        
+        for(let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          // Mix Cyberpunk Yellow and Cyan
+          ctx.fillStyle = Math.random() > 0.5 ? '#FCEE0A' : '#00F0FF';
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          
+          if(drops[i] * fontSize > height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+        if (isRunning) {
+          animationFrameId = requestAnimationFrame(drawMatrix);
+        }
+      }
+      
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        columns = Math.floor(width / fontSize);
+        drops = Array(columns).fill(1);
+      });
+      
+      const themeObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'data-theme') {
+            const theme = document.documentElement.getAttribute('data-theme');
+            if (theme === 'cyberpunk' && !isRunning) {
+              isRunning = true;
+              drawMatrix();
+            } else if (theme !== 'cyberpunk' && isRunning) {
+              isRunning = false;
+              cancelAnimationFrame(animationFrameId);
+              ctx.clearRect(0, 0, width, height);
+            }
+          }
+        });
+      });
+      themeObserver.observe(document.documentElement, { attributes: true });
+      
+      // Init
+      if (document.documentElement.getAttribute('data-theme') === 'cyberpunk') {
+        isRunning = true;
+        drawMatrix();
+      }
     </script>
   </body>
 </html>

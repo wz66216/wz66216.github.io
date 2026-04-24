@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GiscusComments from '../../components/GiscusComments.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
+import PostMetaSidebar from '../../components/PostMetaSidebar.astro';
 import { t } from '../../i18n/utils';
 
 const lang = 'zh' as const;
@@ -89,6 +90,8 @@ const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIc
           </nav>
         </div>
       </div>
+
+      <PostMetaSidebar lang={lang} />
     </div>
   </div>
 </BaseLayout>
@@ -96,7 +99,7 @@ const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIc
 <style>
   .post-container {
     padding: var(--space-xl) var(--space-lg);
-    max-width: 1200px;
+    max-width: 1440px; /* Widened to allow right sidebar to move right */
     margin: 0 auto;
   }
 
@@ -112,8 +115,9 @@ const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIc
   @media (min-width: 1024px) {
     .post-layout {
       flex-direction: row;
-      gap: var(--space-2xl);
+      gap: var(--space-lg);
       align-items: flex-start;
+      justify-content: space-between; /* Push sidebar to the right */
     }
 
     .post-sidebar {
@@ -126,7 +130,13 @@ const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIc
 
     .post-main {
       flex-grow: 1;
+      max-width: 680px;
       min-width: 0; /* Prevent flex overflow */
+    }
+
+    article,
+    .nav-container {
+      margin: 0;
     }
   }
 

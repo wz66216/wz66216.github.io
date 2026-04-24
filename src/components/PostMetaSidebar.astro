@@ -1,0 +1,241 @@
+---
+import { t, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+// Random chess puzzles/quotes for daily inspiration
+const inspirations = [
+  { piece: '♚', text: lang === 'en' ? 'The beauty of a move lies not in its appearance but in the thought behind it.' : '一步棋的美不在于它的外观，而在于其背后的思想。', author: 'Aaron Nimzowitsch' },
+  { piece: '♞', text: lang === 'en' ? 'Play the opening like a book, the middlegame like a magician, and the endgame like a machine.' : '开局如教科书，中局如魔术师，残局如机器。', author: 'Rudolf Spielmann' },
+  { piece: '♛', text: lang === 'en' ? 'Tactics flow from a superior position.' : '战术源于优越的局面。', author: 'Bobby Fischer' },
+  { piece: '♜', text: lang === 'en' ? 'What I cannot create, I do not understand.' : '我不能创造的东西，我就不了解。', author: 'Richard Feynman' },
+  { piece: '♝', text: lang === 'en' ? 'Not only is the Universe stranger than we think, it is stranger than we can think.' : '宇宙不仅比我们想象的更奇妙，而且比我们能想象的还要奇妙。', author: 'Werner Heisenberg' },
+  { piece: '♟', text: lang === 'en' ? 'Every chess master was once a beginner.' : '每一位国际象棋大师都曾是初学者。', author: 'Irving Chernev' }
+];
+
+const randomInspiration = inspirations[Math.floor(Math.random() * inspirations.length)];
+---
+
+<aside class="post-meta-sidebar">
+  <div class="meta-card inspiration-card">
+    <div class="card-header">
+      <span class="piece">{randomInspiration.piece}</span>
+      <span class="title">{t(lang, 'blog.inspiration') || 'DAILY INSPIRATION'}</span>
+    </div>
+    <blockquote class="quote">
+      <p>"{randomInspiration.text}"</p>
+      <footer>— {randomInspiration.author}</footer>
+    </blockquote>
+  </div>
+
+  <div class="meta-card actions-card">
+    <div class="card-header">
+      <span class="title">{t(lang, 'blog.actions') || 'ACTIONS'}</span>
+    </div>
+    <ul class="action-list">
+      <li>
+        <button class="action-btn" id="focus-mode-btn">
+          <span class="icon">◎</span>
+          <span>{t(lang, 'blog.focusMode') || 'Focus Mode'}</span>
+        </button>
+      </li>
+      <li>
+        <button class="action-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+          <span class="icon">↑</span>
+          <span>{t(lang, 'blog.backToTop') || 'Back to Top'}</span>
+        </button>
+      </li>
+      <li>
+        <a href="/admin/index.html" class="action-btn" style="text-decoration: none;">
+          <span class="icon">✎</span>
+          <span>{t(lang, 'blog.adminPanel') || 'Writer Studio'}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="meta-card license-card">
+    <div class="cc-icons">
+      <span class="cc-icon">CC</span>
+      <span class="cc-icon">BY</span>
+      <span class="cc-icon">NC</span>
+      <span class="cc-icon">SA</span>
+    </div>
+    <p class="license-text">
+      {lang === 'en' 
+        ? 'Licensed under CC BY-NC-SA 4.0' 
+        : '本文采用 CC BY-NC-SA 4.0 协议许可'}
+    </p>
+  </div>
+</aside>
+
+<style>
+  .post-meta-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .meta-card {
+    padding: var(--space-md);
+    background: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  :global([data-theme="light"]) .meta-card {
+    background: #fafafa;
+  }
+
+  .meta-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0px var(--color-border);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-sm);
+  }
+
+  .card-header .piece {
+    font-size: 1.2rem;
+    color: var(--color-text-primary);
+  }
+
+  .card-header .title {
+    font-family: var(--font-code);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+  }
+
+  /* Inspiration Card */
+  .quote {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  .quote p {
+    margin-bottom: var(--space-sm);
+  }
+
+  .quote footer {
+    font-size: 0.8rem;
+    font-style: normal;
+    text-align: right;
+    font-family: var(--font-code);
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  /* Actions Card */
+  .action-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .action-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-code);
+    font-size: 0.8rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .action-btn:hover {
+    background: var(--color-text-primary);
+    color: var(--color-bg-white);
+    border-color: var(--color-text-primary);
+  }
+
+  /* License Card */
+  .license-card {
+    text-align: center;
+    border-style: dashed;
+  }
+
+  .cc-icons {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: var(--space-sm);
+  }
+
+  .cc-icon {
+    font-family: var(--font-code);
+    font-weight: 900;
+    font-size: 0.8rem;
+    border: 1px solid var(--color-text-primary);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .license-text {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  @media (min-width: 1200px) {
+    .post-meta-sidebar {
+      position: sticky;
+      top: 2rem;
+      width: 220px;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+  }
+</style>
+
+<script>
+  // Focus Mode toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const focusBtn = document.getElementById('focus-mode-btn');
+    if (focusBtn) {
+      focusBtn.addEventListener('click', () => {
+        document.body.classList.toggle('focus-mode');
+        const isActive = document.body.classList.contains('focus-mode');
+        
+        // Update button text subtly
+        const textSpan = focusBtn.querySelector('span:not(.icon)');
+        if (textSpan) {
+          textSpan.textContent = isActive 
+            ? (document.documentElement.lang === 'en' ? 'Exit Focus' : '退出专注')
+            : (document.documentElement.lang === 'en' ? 'Focus Mode' : '专注模式');
+        }
+      });
+    }
+  });
+</script>

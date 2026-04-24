@@ -39,6 +39,7 @@ const navItems = [
       <button class="control-btn" id="theme-toggle" aria-label="Toggle theme">
         <span class="icon-sun">☀</span>
         <span class="icon-moon">☾</span>
+        <span class="icon-zap">⚡</span>
       </button>
     </div>
   </div>
@@ -65,8 +66,10 @@ const navItems = [
     
     // Switch theme halfway through the flip (when content is invisible at 90deg)
     setTimeout(() => {
+      const themes = ['light', 'dark', 'cyberpunk'];
       const currentTheme = localStorage.getItem('theme') || 'light';
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      const currentIndex = themes.indexOf(currentTheme) !== -1 ? themes.indexOf(currentTheme) : 0;
+      const newTheme = themes[(currentIndex + 1) % themes.length];
       
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
@@ -184,8 +187,15 @@ const navItems = [
 
   :global([data-theme="light"]) .icon-moon { display: inline; }
   :global([data-theme="light"]) .icon-sun { display: none; }
+  :global([data-theme="light"]) .icon-zap { display: none; }
+  
   :global([data-theme="dark"]) .icon-moon { display: none; }
   :global([data-theme="dark"]) .icon-sun { display: inline; }
+  :global([data-theme="dark"]) .icon-zap { display: none; }
+
+  :global([data-theme="cyberpunk"]) .icon-moon { display: none; }
+  :global([data-theme="cyberpunk"]) .icon-sun { display: none; }
+  :global([data-theme="cyberpunk"]) .icon-zap { display: inline; }
 
   .mobile-toggle {
     display: none;
