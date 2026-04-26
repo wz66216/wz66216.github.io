@@ -9,7 +9,7 @@ interface Props {
   lang?: Lang;
 }
 
-import MetingPlayer from '../components/music/MetingPlayer.astro';
+import CustomMusicPlayer from '../components/music/CustomMusicPlayer.astro';
 
 const { title, description = "Wang Zhai - Physics Student & Chess Player", lang = defaultLang } = Astro.props;
 ---
@@ -38,45 +38,8 @@ const { title, description = "Wang Zhai - Physics Student & Chess Player", lang 
       <slot />
     </main>
 
-    <!-- Global Floating Music Player (Default Kugou or Netease) -->
-    <MetingPlayer server="netease" type="playlist" id="3778678" fixed={true} mini={true} autoplay={false} />
-
-    <style>
-      .main-content {
-        margin-left: 240px;
-        min-height: 100vh;
-        transition: margin-left 0.3s ease;
-      }
-      
-      @media (max-width: 768px) {
-        .main-content {
-          margin-left: 0;
-          padding-top: 60px; /* Space for mobile toggle */
-        }
-      }
-    </style>
-    <script>
-      // Scroll Entrance Animations
-      document.addEventListener('DOMContentLoaded', () => {
-        const observerOptions = {
-          root: null,
-          rootMargin: '0px',
-          threshold: 0.15 // Trigger when 15% visible
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              observer.unobserve(entry.target); // Play once
-            }
-          });
-        }, observerOptions);
-
-        const animatedElements = document.querySelectorAll('.animate-on-scroll, .animate-drop, .animate-knight');
-        animatedElements.forEach(el => observer.observe(el));
-      });
-    </script>
+    <!-- Global Floating Music Player (Draggable Custom UI) -->
+    <CustomMusicPlayer server="netease" type="playlist" id="9098164421" />
 
     <!-- Cyberpunk Matrix Canvas -->
     <canvas id="cyberpunk-matrix"></canvas>

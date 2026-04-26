@@ -120,4 +120,16 @@
 
 ---
 
-**当前状态**：Decap CMS 后台代码完成，等待 GitHub OAuth 配置 + Worker 部署后上线 `/admin`
+### 阶段十三：音乐播放器与内容修复
+- 恢复了被第三方同步插件（Obsidian GitHub Publisher）误删的测试博客文章。
+- 移除了因缺少 Frontmatter 而导致 Astro 编译崩溃的残缺 md 文件。
+- 修复了 `BaseLayout` 中导致页面底部 Footer 重复渲染的问题。
+- 移除了笨重的第三方 APlayer 库，开发纯原生 Vanilla JS 的 `CustomMusicPlayer.astro` 全局悬浮组件。
+- 确定并实现了 **Minimalist Floating Vinyl（极简黑胶）** 播放器 UI 交互方案，深度融合 Swiss Grid × Chess 核心黑白极简风格。
+- 接入第三方稳定 Meting API（`api.injahow.cn`）以支持抓取酷狗音乐每日歌单。
+- 修复了隐藏极深的 Flexbox 宽度坍缩 Bug（由 `flex-shrink` 导致黑胶塌陷为 0 像素无法触发 hover 的问题）。
+- 播放器已完美适配自由拖拽、Light/Dark 双主题 CSS 变量平滑切换机制。
+
+---
+
+**当前状态**：全局音乐播放器开发完成，并在本地通过 `npm run build` 测试（0 错误）。等待填入最终的酷狗歌单 ID 后推送部署。
