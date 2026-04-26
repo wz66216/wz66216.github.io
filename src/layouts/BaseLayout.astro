@@ -9,6 +9,8 @@ interface Props {
   lang?: Lang;
 }
 
+import MetingPlayer from '../components/music/MetingPlayer.astro';
+
 const { title, description = "Wang Zhai - Physics Student & Chess Player", lang = defaultLang } = Astro.props;
 ---
 
@@ -35,6 +37,10 @@ const { title, description = "Wang Zhai - Physics Student & Chess Player", lang 
     <main class="main-content">
       <slot />
     </main>
+
+    <!-- Global Floating Music Player (Default Kugou or Netease) -->
+    <MetingPlayer server="netease" type="playlist" id="3778678" fixed={true} mini={true} autoplay={false} />
+
     <style>
       .main-content {
         margin-left: 240px;
