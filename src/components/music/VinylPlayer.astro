@@ -1,0 +1,580 @@
+---
+interface Props {
+  id?: string;
+  server?: "netease" | "kugou" | "tencent";
+  type?: "song" | "playlist";
+  title?: string;
+  artist?: string;
+  cover?: string;
+  src?: string;
+  api?: string;
+}
+
+const {
+  id,
+  server = "kugou",
+  type = "playlist",
+  title,
+  artist,
+  cover,
+  src,
+  api = "https://api.injahow.cn/meting/"
+} = Astro.props;
+
+const playerId = `vp-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  class="vinyl-player"
+  id={playerId}
+  data-id={id}
+  data-server={server}
+  data-type={type}
+  data-title={title}
+  data-artist={artist}
+  data-cover={cover}
+  data-src={src}
+  data-api={api}
+>
+  <!-- 动态模糊背景 -->
+  <div class="vinyl-player-bg">
+    <img class="vinyl-player-bg-img" src={cover || ""} alt="" />
+    <div class="vinyl-player-bg-overlay"></div>
+  </div>
+
+  <div class="vinyl-player-content">
+    <div class="vinyl-player-main">
+      <div class="vinyl-player-disc-area">
+        <div class="vinyl-player-disc-wrapper">
+          <div class="vinyl-player-disc">
+            <img class="vinyl-player-cover" src={cover || ""} alt="" draggable="false" />
+          </div>
+          <div class="vinyl-player-needle">
+            <div class="vinyl-player-needle-arm">
+              <div class="vinyl-player-needle-head"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vinyl-player-controls-area">
+        <div class="vinyl-player-info">
+          <div class="vinyl-player-song-name">{title || "..."}</div>
+          <div class="vinyl-player-artist">{artist || ""}</div>
+        </div>
+
+        <!-- 自定义进度条 -->
+        <div class="vinyl-player-progress-wrapper">
+          <span class="vinyl-player-time-current">0:00</span>
+          <div class="vinyl-player-progress-bar">
+            <div class="vinyl-player-progress-fill"></div>
+            <div class="vinyl-player-progress-thumb"></div>
+          </div>
+          <span class="vinyl-player-time-total">0:00</span>
+        </div>
+
+        <div class="vinyl-player-actions">
+          <button class="vinyl-player-btn" data-action="prev" aria-label="Previous">
+            <svg viewBox="0 0 24 24"><path d="M7 4a1 1 0 0 1 1 1v6.333l10.223-6.815a.5.5 0 0 1 .777.416v14.132a.5.5 0 0 1-.777.416L8 12.667V19a1 1 0 1 1-2 0V5a1 1 0 0 1 1-1z"/></svg>
+          </button>
+          <button data-action="play" class="vinyl-player-btn-play" aria-label="Play">
+            <svg viewBox="0 0 24 24"><path d="M6 20.196V3.804a1 1 0 0 1 1.53-.848l13.113 8.196a1 1 0 0 1 0 1.696L7.53 21.044A1 1 0 0 1 6 20.196z"/></svg>
+          </button>
+          <button class="vinyl-player-btn" data-action="next" aria-label="Next">
+            <svg viewBox="0 0 24 24"><path d="M16 12.667L5.777 19.482A.5.5 0 0 1 5 19.066V4.934a.5.5 0 0 1 .777-.416L16 11.333V5a1 1 0 1 1 2 0v14a1 1 0 1 1-2 0z"/></svg>
+          </button>
+          
+          <div class="vinyl-player-volume-group">
+            <button class="vinyl-player-btn" data-action="mute" aria-label="Mute">
+              <svg viewBox="0 0 24 24"><path d="M6.603 10L10 7.22v9.56L6.603 14H3v-4zM2 16h3.889l5.294 4.332a.5.5 0 0 0 .817-.387V4.055a.5.5 0 0 0-.817-.387L5.89 8H2a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1z"/></svg>
+            </button>
+            <input class="vinyl-player-volume" type="range" min="0" max="1" step="0.05" value="0.7" aria-label="Volume" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vinyl-player-body">
+      <div class="vinyl-player-lrc">
+        <div class="vinyl-player-lrc-inner"></div>
+      </div>
+      <div class="vinyl-player-playlist">
+        <div class="vinyl-player-song-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/styles/music-player.css" />
+
+<script>
+(() => {
+  class VinylPlayerController {
+    /** @param {HTMLElement} el */
+    constructor(el) {
+      this.el = el;
+      this.audio = new Audio();
+      this.audio.volume = 0.7;
+      this.songs = [];
+      this.currentIndex = 0;
+      this.playlistItems = [];
+
+      this.disc = el.querySelector(".vinyl-player-disc");
+      this.needle = el.querySelector(".vinyl-player-needle");
+      this.coverImg = /** @type {HTMLImageElement} */ (el.querySelector(".vinyl-player-cover"));
+      this.songName = el.querySelector(".vinyl-player-song-name");
+      this.artistEl = el.querySelector(".vinyl-player-artist");
+      this.btnPlay = /** @type {HTMLButtonElement} */ (el.querySelector('[data-action="play"]'));
+      this.songList = el.querySelector(".vinyl-player-song-list");
+      this.playerBody = el.querySelector(".vinyl-player-body");
+      this.lyricsPanel = el.querySelector(".vinyl-player-lrc");
+      this.lyricsInner = el.querySelector(".vinyl-player-lrc-inner");
+      this.lyricsData = [];
+      this.currentLyricIndex = -1;
+
+      this.bindEvents();
+      this.init();
+    }
+
+    async init() {
+      const dataSrc = this.el.dataset.src;
+      const dataId = this.el.dataset.id;
+      const api = this.el.dataset.api || "";
+      const server = this.el.dataset.server || "kugou";
+      const dataType = this.el.dataset.type || "playlist";
+
+      if (dataSrc) {
+        this.songs = [{
+          title: this.el.dataset.title || "Unknown",
+          artist: this.el.dataset.artist || "",
+          cover: this.el.dataset.cover || "",
+          url: dataSrc,
+          lrc: "",
+        }];
+      } else if (dataId && dataType === "playlist") {
+        this.songs = await this.fetchPlaylist(api, server, dataId);
+      } else if (dataId) {
+        const ids = dataId.split(",").map((s) => s.trim()).filter(Boolean);
+        const results = await Promise.all(ids.map((sid) => this.fetchSong(api, server, sid)));
+        this.songs = results.filter((s) => s !== null);
+      }
+
+      if (this.songs.length > 0) {
+        this.loadSong(0);
+        this.renderPlaylist();
+      } else {
+        this.songName.textContent = "No songs found";
+      }
+    }
+
+    async fetchSong(api, server, id) {
+      try {
+        const res = await fetch(`${api}?server=${server}&type=song&id=${id}`);
+        const data = await res.json();
+        const info = Array.isArray(data) ? data[0] : data;
+        if (!info) return null;
+        return {
+          id: info.id || id,
+          title: info.title || info.name || "Unknown",
+          artist: info.artist || info.author || "",
+          cover: info.pic || info.cover || "",
+          url: info.url || `${api}?server=${server}&type=url&id=${id}`,
+          lrc: info.lrc || "",
+        };
+      } catch {
+        return null;
+      }
+    }
+
+    async fetchPlaylist(api, server, id) {
+      try {
+        const res = await fetch(`${api}?server=${server}&type=playlist&id=${id}`);
+        const data = await res.json();
+        if (!Array.isArray(data)) return [];
+        return data
+.map((s) => ({
+              id: s.id || "",
+              title: s.name || s.title || "Unknown",
+              artist: s.author || s.artist || "",
+              cover: s.pic || s.cover || "",
+              url: s.url || `${api}?server=${server}&type=url&id=${s.id}`,
+              lrc: s.lrc || "",
+            }))
+          .filter((s) => s.url);
+      } catch {
+        return [];
+      }
+    }
+
+    loadSong(index) {
+      if (!this.songs[index]) return;
+      this.currentIndex = index;
+      const song = this.songs[index];
+      this.audio.src = song.url;
+      this.songName.textContent = song.title;
+      this.artistEl.textContent = song.artist;
+      this.coverImg.src = song.cover;
+      this.renderLyrics(song.lrc || "", index);
+      this.updatePlaylistUI();
+      this.emitTrackChange(song);
+    }
+
+    emitTrackChange(song) {
+      window.dispatchEvent(new CustomEvent("player-track-changed", {
+        detail: {
+          title: song.title,
+          artist: song.artist,
+          cover: song.cover,
+          server: this.el.dataset.server || "kugou",
+          songId: song.id || "",
+          playlistId: this.el.dataset.id || "",
+        },
+      }));
+    }
+
+    async renderLyrics(lrcText, songIndex) {
+      if (!(this.lyricsPanel instanceof HTMLElement) || !(this.lyricsInner instanceof HTMLElement)) return;
+      let resolvedLyrics = String(lrcText || "");
+
+      if (/^https?:\/\//i.test(resolvedLyrics)) {
+        try {
+          const response = await fetch(resolvedLyrics);
+          resolvedLyrics = response.ok ? await response.text() : "";
+        } catch {
+          resolvedLyrics = "";
+        }
+      }
+
+      if (songIndex !== this.currentIndex) return;
+
+      const timedLines = this.parseLyrics(resolvedLyrics);
+      const lines = timedLines.map((line) => line.text).filter(Boolean);
+
+      if (!lines.length) {
+        this.lyricsData = [];
+        this.currentLyricIndex = -1;
+        this.lyricsPanel.hidden = true;
+        if (this.playerBody instanceof HTMLElement) {
+          this.playerBody.classList.add("lyrics-empty");
+        }
+        this.lyricsInner.innerHTML = "";
+        return;
+      }
+
+      this.lyricsPanel.hidden = false;
+      this.lyricsData = timedLines;
+      this.currentLyricIndex = -1;
+      if (this.playerBody instanceof HTMLElement) {
+        this.playerBody.classList.remove("lyrics-empty");
+      }
+      this.lyricsInner.innerHTML = lines
+        .map((line) => `<p>${line}</p>`)
+        .join("");
+      this.syncLyrics();
+    }
+
+    parseLyrics(lrcText) {
+      const parsed = [];
+      const timePattern = /\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\]/g;
+
+      String(lrcText || "")
+        .split(/\r?\n/)
+        .forEach((rawLine) => {
+          const text = rawLine.replace(timePattern, "").trim();
+          if (!text) return;
+
+          const matches = [...rawLine.matchAll(timePattern)];
+          if (!matches.length) {
+            parsed.push({ time: parsed.length, text });
+            return;
+          }
+
+          matches.forEach((match) => {
+            const minutes = Number(match[1] || 0);
+            const seconds = Number(match[2] || 0);
+            const fractionRaw = match[3] || "0";
+            const fraction = Number(`0.${fractionRaw.padEnd(3, "0")}`);
+            parsed.push({
+              time: minutes * 60 + seconds + fraction,
+              text,
+            });
+          });
+        });
+
+      return parsed.sort((a, b) => a.time - b.time);
+    }
+
+    syncLyrics() {
+      if (!(this.lyricsInner instanceof HTMLElement) || !this.lyricsData.length) return;
+
+      const currentTime = this.audio.currentTime || 0;
+      let activeIndex = 0;
+
+      for (let i = 0; i < this.lyricsData.length; i += 1) {
+        if (currentTime >= this.lyricsData[i].time) {
+          activeIndex = i;
+        } else {
+          break;
+        }
+      }
+
+      if (activeIndex === this.currentLyricIndex) return;
+      this.currentLyricIndex = activeIndex;
+
+      const lyricLines = Array.from(this.lyricsInner.querySelectorAll("p"));
+      lyricLines.forEach((line, index) => {
+        line.classList.toggle("current", index === activeIndex);
+        line.classList.toggle("near-current", Math.abs(index - activeIndex) === 1);
+        line.classList.toggle("far-current", Math.abs(index - activeIndex) === 2);
+      });
+
+      const activeLine = lyricLines[activeIndex];
+      if (!(activeLine instanceof HTMLElement) || !(this.lyricsPanel instanceof HTMLElement)) return;
+
+      const targetOffset = activeLine.offsetTop - this.lyricsPanel.clientHeight / 2 + activeLine.clientHeight / 2;
+      this.lyricsInner.style.transform = `translateY(${-Math.max(0, targetOffset)}px)`;
+    }
+
+    bindEvents() {
+      this.btnPlay?.addEventListener("click", () => this.togglePlay());
+
+      this.el.querySelector('[data-action="prev"]')?.addEventListener("click", () => this.prev());
+      this.el.querySelector('[data-action="next"]')?.addEventListener("click", () => this.next());
+
+      this.el.querySelector('.vinyl-player-volume')?.addEventListener("input", (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        this.audio.volume = parseFloat(target.value);
+      });
+
+      this.el.querySelector('[data-action="mute"]')?.addEventListener("click", () => {
+        this.audio.muted = !this.audio.muted;
+      });
+
+      this.el.querySelector('.vinyl-player-progress-wrapper')?.addEventListener("click", (e) => {
+        const wrapper = e.currentTarget;
+        if (!(wrapper instanceof HTMLElement)) return;
+        const rect = wrapper.getBoundingClientRect();
+        const pct = (e.clientX - rect.left) / rect.width;
+        if (this.audio.duration) {
+          this.audio.currentTime = this.audio.duration * pct;
+        }
+      });
+
+      this.audio.addEventListener("timeupdate", () => this.updateSongProgress());
+      this.audio.addEventListener("ended", () => this.next());
+      this.audio.addEventListener("play", () => this.setPlayingUI(true));
+      this.audio.addEventListener("pause", () => this.setPlayingUI(false));
+
+      window.addEventListener("player-load-playlist", (e) => {
+        const event = e;
+        if (!(event instanceof CustomEvent)) return;
+        const detail = event.detail || {};
+        const playlistId = detail.playlistId;
+        const server = detail.server || this.el.dataset.server || "kugou";
+        if (!playlistId) return;
+        this.loadPlaylistById(String(playlistId), String(server));
+      });
+
+      window.addEventListener("player-load-song", (e) => {
+        const event = e;
+        if (!(event instanceof CustomEvent)) return;
+        const detail = event.detail || {};
+        const songId = detail.songId;
+        const server = detail.server || this.el.dataset.server || "kugou";
+        if (!songId) return;
+        this.loadSongById(String(songId), String(server));
+      });
+    }
+
+    async loadPlaylistById(playlistId, server) {
+      const api = this.el.dataset.api || "";
+      this.el.dataset.server = server;
+      this.songs = await this.fetchPlaylist(api, server, playlistId);
+      this.currentIndex = 0;
+      if (this.songs.length > 0) {
+        this.loadSong(0);
+        this.renderPlaylist();
+        this.playAudio();
+      } else {
+        this.songName.textContent = "No songs found";
+        this.artistEl.textContent = "";
+        this.songList.innerHTML = "";
+        window.dispatchEvent(new CustomEvent("player-track-changed", {
+          detail: {
+            title: "",
+            artist: "",
+            cover: "",
+            server,
+            playlistId,
+          },
+        }));
+      }
+    }
+
+    async loadSongById(songId, server) {
+      const api = this.el.dataset.api || "";
+      this.el.dataset.server = server;
+      const song = await this.fetchSong(api, server, songId);
+      if (!song) return;
+      this.songs = [song];
+      this.currentIndex = 0;
+      this.loadSong(0);
+      this.renderPlaylist();
+      this.playAudio();
+    }
+
+    playAudio() {
+      this.audio.play().catch(() => {});
+    }
+
+    togglePlay() {
+      if (this.audio.paused) this.playAudio();
+      else this.audio.pause();
+    }
+
+    setPlayingUI(playing) {
+      this.disc?.classList.toggle("spinning", playing);
+      this.needle?.classList.toggle("playing", playing);
+      const icon = playing
+        ? '<svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zm10 0h2v14h-2z"/></svg>'
+        : '<svg viewBox="0 0 24 24"><path d="M6 20.196V3.804a1 1 0 0 1 1.53-.848l13.113 8.196a1 1 0 0 1 0 1.696L7.53 21.044A1 1 0 0 1 6 20.196z"/></svg>';
+      const svg = this.btnPlay?.querySelector("svg");
+      if (svg) svg.innerHTML = icon;
+    }
+
+    prev() {
+      if (!this.songs.length) return;
+      this.loadSong(this.currentIndex <= 0 ? this.songs.length - 1 : this.currentIndex - 1);
+      this.playAudio();
+    }
+
+    next() {
+      if (!this.songs.length) return;
+      this.loadSong(this.currentIndex >= this.songs.length - 1 ? 0 : this.currentIndex + 1);
+      this.playAudio();
+    }
+
+    renderPlaylist() {
+      if (!this.songList) return;
+      if (this.songs.length <= 1) {
+        const playlist = this.songList.closest(".vinyl-player-playlist");
+        if (playlist instanceof HTMLElement) playlist.style.display = "none";
+        return;
+      }
+
+      const playlist = this.songList.closest(".vinyl-player-playlist");
+      if (playlist instanceof HTMLElement) playlist.style.display = "block";
+
+      this.songList.innerHTML = "";
+      this.songs.forEach((song, i) => {
+        const btn = document.createElement("button");
+        btn.className = "vinyl-player-song-item";
+        btn.dataset.songIndex = String(i);
+        btn.setAttribute("aria-label", "播放 " + song.title);
+
+        const progressBg = document.createElement("div");
+        progressBg.className = "vinyl-player-song-progress-bg";
+
+        const idx = document.createElement("span");
+        idx.className = "vinyl-player-song-index";
+        idx.textContent = String(i + 1);
+
+        const title = document.createElement("span");
+        title.className = "vinyl-player-song-title";
+        title.textContent = song.title;
+
+        const artist = document.createElement("span");
+        artist.className = "vinyl-player-song-artist";
+        artist.textContent = song.artist;
+
+        const time = document.createElement("span");
+        time.className = "vinyl-player-song-time";
+
+        btn.append(progressBg, idx, title, artist, time);
+        btn.addEventListener("click", () => {
+          this.loadSong(i);
+          this.playAudio();
+        });
+        this.songList.append(btn);
+      });
+
+      this.playlistItems = Array.from(this.songList.querySelectorAll(".vinyl-player-song-item"));
+      this.updatePlaylistUI();
+    }
+
+    updatePlaylistUI() {
+      this.playlistItems.forEach((item, i) => {
+        item.classList.toggle("current", i === this.currentIndex);
+        const idx = item.querySelector(".vinyl-player-song-index");
+        if (idx) idx.textContent = i === this.currentIndex ? "▶" : String(i + 1);
+      });
+      // 更新动态模糊背景
+      const bgImg = this.el.querySelector(".vinyl-player-bg-img");
+      if (bgImg && this.songs[this.currentIndex]) {
+        bgImg.src = this.songs[this.currentIndex].cover;
+      }
+    }
+
+    updateSongProgress() {
+      const item = this.playlistItems[this.currentIndex];
+      
+      // 更新顶部进度条
+      const thumb = this.el.querySelector(".vinyl-player-progress-thumb");
+      const fill = this.el.querySelector(".vinyl-player-progress-fill");
+      const timeCurrent = this.el.querySelector(".vinyl-player-time-current");
+      const timeTotal = this.el.querySelector(".vinyl-player-time-total");
+
+      if (this.audio.duration) {
+        const pct = (this.audio.currentTime / this.audio.duration) * 100;
+        if (thumb && fill) {
+          thumb.style.transform = `translateX(${pct}%)`;
+          fill.style.width = `${pct}%`;
+        }
+        
+        if (timeCurrent) timeCurrent.textContent = this.formatTime(this.audio.currentTime);
+        if (timeTotal) timeTotal.textContent = this.formatTime(this.audio.duration);
+      }
+
+      this.syncLyrics();
+
+      // 更新列表内的微型进度条
+      if (!item) return;
+      const bar = item.querySelector(".vinyl-player-song-progress-bg");
+      if (!(bar instanceof HTMLElement)) return;
+      if (this.audio.duration) {
+        const pct = (this.audio.currentTime / this.audio.duration) * 100;
+        bar.style.width = `${pct}%`;
+      }
+    }
+
+    formatTime(seconds) {
+      if (isNaN(seconds)) return "0:00";
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+  }
+
+  function initVinylPlayers() {
+    document.querySelectorAll(".vinyl-player:not([data-initialized])").forEach((el) => {
+      if (!(el instanceof HTMLElement)) return;
+      el.dataset.initialized = "true";
+      new VinylPlayerController(el);
+    });
+  }
+
+  document.addEventListener("astro:page-load", initVinylPlayers);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initVinylPlayers, { once: true });
+  } else {
+    initVinylPlayers();
+  }
+})();
+</script>
+
+<style>
+  .vinyl-player {
+    display: contents;
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+import type { Lang } from '../../i18n/utils';
+import { t } from '../../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = "zh" as const } = Astro.props;
+---
+
+<div class="search-panel">
+  <div class="search-input-wrapper">
+    <span class="search-icon">🔍</span>
+    <input 
+      type="text" 
+      id="music-search-input"
+      class="search-input"
+      placeholder={t(lang, "music.search.placeholder")}
+    />
+  </div>
+</div>
+
+<script>
+  const searchInput = document.getElementById("music-search-input");
+  
+  searchInput?.addEventListener("input", (e) => {
+    const target = e.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    const query = target.value;
+    window.dispatchEvent(new CustomEvent("music-search", { 
+      detail: { query } 
+    }));
+  });
+</script>
+
+<style>
+  .search-panel {
+    margin: var(--space-lg) 0;
+  }
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    border: 1px solid var(--color-border);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg-white);
+    transition: border-color 0.2s ease;
+  }
+
+  .search-input-wrapper:focus-within {
+    border-color: var(--color-accent);
+  }
+
+  .search-icon {
+    font-size: 1rem;
+    opacity: 0.5;
+  }
+
+  .search-input {
+    flex: 1;
+    border: none;
+    background: none;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    outline: none;
+  }
+
+  .search-input::placeholder {
+    color: var(--color-text-secondary);
+  }
+</style>

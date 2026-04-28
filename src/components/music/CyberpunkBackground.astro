@@ -1,0 +1,344 @@
+---
+export interface Props {
+  lang?: 'zh' | 'en';
+}
+
+const { lang = 'zh' } = Astro.props;
+---
+
+<div class="cyberpunk-background" aria-hidden="true">
+  <!-- Layer 1: Sky & Stars -->
+  <div class="cyber-layer cyber-sky">
+    <div class="cyber-moon"></div>
+    <div class="cyber-stars"></div>
+    <canvas id="cyber-sky-canvas" class="cyber-canvas"></canvas>
+  </div>
+
+  <!-- Layer 2: Cityscape -->
+  <div class="cyber-layer cyber-city">
+    <div class="city-buildings"></div>
+  </div>
+
+  <!-- Layer 3: Digital Ocean & Grid -->
+  <div class="cyber-layer cyber-ocean">
+    <div class="ocean-grid"></div>
+    <canvas id="cyber-ocean-canvas" class="cyber-canvas"></canvas>
+  </div>
+</div>
+
+<script is:inline>
+  class CyberpunkScene {
+    constructor() {
+      this.skyCanvas = document.getElementById('cyber-sky-canvas');
+      this.oceanCanvas = document.getElementById('cyber-ocean-canvas');
+      
+      if (!this.skyCanvas || !this.oceanCanvas) return;
+      
+      this.skyCtx = this.skyCanvas.getContext('2d');
+      this.oceanCtx = this.oceanCanvas.getContext('2d');
+      
+      this.vehicles = [];
+      this.waves = [];
+      this.particles = [];
+      
+      this.resize = this.resize.bind(this);
+      this.animate = this.animate.bind(this);
+      
+      window.addEventListener('resize', this.resize);
+      this.resize();
+      this.initObjects();
+      this.animate();
+    }
+
+    resize() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      
+      this.skyCanvas.width = width;
+      this.skyCanvas.height = height;
+      
+      this.oceanCanvas.width = width;
+      this.oceanCanvas.height = height * 0.4; // Ocean takes bottom 40%
+    }
+
+    initObjects() {
+      // Init flying vehicles
+      for (let i = 0; i < 5; i++) {
+        this.vehicles.push({
+          x: Math.random() * this.skyCanvas.width,
+          y: Math.random() * (this.skyCanvas.height * 0.5),
+          speed: 1 + Math.random() * 2,
+          color: Math.random() > 0.5 ? '#ff2a6d' : '#05d9e8',
+          size: 1 + Math.random() * 2
+        });
+      }
+
+      // Init ocean waves (lines)
+      for (let i = 0; i < 10; i++) {
+        this.waves.push({
+          y: (i / 10) * this.oceanCanvas.height,
+          speed: 0.2 + (i / 20),
+          offset: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    drawSky() {
+      this.skyCtx.clearRect(0, 0, this.skyCanvas.width, this.skyCanvas.height);
+      
+      // Draw vehicles
+      this.vehicles.forEach(v => {
+        v.x += v.speed;
+        if (v.x > this.skyCanvas.width + 100) {
+          v.x = -100;
+          v.y = Math.random() * (this.skyCanvas.height * 0.5);
+        }
+
+        this.skyCtx.beginPath();
+        this.skyCtx.moveTo(v.x, v.y);
+        this.skyCtx.lineTo(v.x - 40, v.y);
+        
+        const gradient = this.skyCtx.createLinearGradient(v.x, v.y, v.x - 40, v.y);
+        gradient.addColorStop(0, v.color);
+        gradient.addColorStop(1, 'transparent');
+        
+        this.skyCtx.strokeStyle = gradient;
+        this.skyCtx.lineWidth = v.size;
+        this.skyCtx.lineCap = 'round';
+        this.skyCtx.stroke();
+      });
+    }
+
+    drawOcean() {
+      this.oceanCtx.clearRect(0, 0, this.oceanCanvas.width, this.oceanCanvas.height);
+      
+      const time = Date.now() * 0.001;
+      const centerY = this.oceanCanvas.height / 2;
+      
+      // Draw wave lines
+      this.oceanCtx.lineWidth = 1.5;
+      
+      this.waves.forEach((wave, index) => {
+        this.oceanCtx.beginPath();
+        
+        for (let x = 0; x <= this.oceanCanvas.width; x += 20) {
+          // Calculate perspective effect
+          const perspective = (wave.y / this.oceanCanvas.height);
+          const waveHeight = 15 * perspective;
+          
+          const y = wave.y + Math.sin(x * 0.01 + time * wave.speed + wave.offset) * waveHeight;
+          
+          if (x === 0) {
+            this.oceanCtx.moveTo(x, y);
+          } else {
+            this.oceanCtx.lineTo(x, y);
+          }
+        }
+        
+        const alpha = 0.1 + (wave.y / this.oceanCanvas.height) * 0.4;
+        this.oceanCtx.strokeStyle = `rgba(5, 217, 232, ${alpha})`;
+        this.oceanCtx.stroke();
+        
+        // Move wave forward
+        wave.y += wave.speed * 2;
+        if (wave.y > this.oceanCanvas.height) {
+          wave.y = 0;
+        }
+      });
+
+      // Draw vertical perspective grid lines
+      this.oceanCtx.beginPath();
+      const centerX = this.oceanCanvas.width / 2;
+      for (let i = -10; i <= 10; i++) {
+        const startX = centerX + (i * 40);
+        const endX = centerX + (i * 150);
+        
+        this.oceanCtx.moveTo(startX, 0);
+        this.oceanCtx.lineTo(endX, this.oceanCanvas.height);
+      }
+      this.oceanCtx.strokeStyle = 'rgba(255, 42, 109, 0.15)';
+      this.oceanCtx.stroke();
+    }
+
+    animate() {
+      this.drawSky();
+      this.drawOcean();
+      requestAnimationFrame(this.animate);
+    }
+  }
+
+  // Initialize on load and when astro swaps pages
+  const initScene = () => {
+    new CyberpunkScene();
+  };
+
+  document.addEventListener('DOMContentLoaded', initScene);
+  document.addEventListener('astro:page-load', initScene);
+</script>
+
+<style>
+  .cyberpunk-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    background: #020204;
+    pointer-events: none;
+  }
+
+  .cyber-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cyber-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Sky Layer */
+  .cyber-sky {
+    background: linear-gradient(180deg, #0f0c29 0%, #302b63 60%, #24243e 100%);
+  }
+
+  .cyber-moon {
+    position: absolute;
+    top: 15%;
+    right: 15%;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff 0%, #ff2a6d 100%);
+    box-shadow: 
+      0 0 40px #ff2a6d,
+      0 0 100px rgba(255, 42, 109, 0.4),
+      inset -10px -10px 20px rgba(0,0,0,0.5);
+    filter: blur(1px);
+  }
+
+  .cyber-stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 160px 120px, #fff, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    opacity: 0.3;
+    animation: twinkle 4s infinite alternate;
+  }
+
+  /* Cityscape Layer */
+  .cyber-city {
+    top: auto;
+    bottom: 35%; /* Sits above the ocean */
+    height: 40%;
+    background-image: 
+      /* Distant buildings */
+      linear-gradient(0deg, #010a15 0%, transparent 100%),
+      repeating-linear-gradient(90deg, 
+        transparent 0, transparent 10px, 
+        rgba(5, 217, 232, 0.1) 10px, rgba(5, 217, 232, 0.1) 12px,
+        transparent 12px, transparent 30px),
+      /* Foreground buildings */
+      linear-gradient(90deg,
+        #050914 0%, #050914 10%,
+        #0a1128 10%, #0a1128 25%,
+        #050914 25%, #050914 40%,
+        #0f172a 40%, #0f172a 55%,
+        #050914 55%, #050914 70%,
+        #0a1128 70%, #0a1128 85%,
+        #050914 85%, #050914 100%
+      );
+    background-size: 100% 100%, 100px 100%, 100% 60%;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    mask-image: linear-gradient(to top, black 20%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 20%, transparent 100%);
+    opacity: 0.8;
+  }
+
+  .cyber-city::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #05d9e8;
+    box-shadow: 0 0 10px #05d9e8, 0 0 20px #05d9e8;
+  }
+
+  /* Ocean & Grid Layer */
+  .cyber-ocean {
+    top: auto;
+    bottom: 0;
+    height: 40%;
+    background: linear-gradient(180deg, #010a15 0%, #0b0220 100%);
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  #cyber-ocean-canvas {
+    bottom: 0;
+    top: auto;
+  }
+
+  .ocean-grid {
+    position: absolute;
+    bottom: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: 
+      linear-gradient(rgba(5, 217, 232, 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 42, 109, 0.3) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: rotateX(75deg);
+    transform-origin: top center;
+    animation: gridMove 20s linear infinite;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 40%, black 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 40%, black 100%);
+  }
+
+  @keyframes gridMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 40px; }
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.2; }
+    100% { opacity: 0.5; }
+  }
+
+  /* Add some scanlines for retro feel */
+  .cyberpunk-background::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+  }
+</style>

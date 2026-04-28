@@ -1,0 +1,390 @@
+---
+import type { Lang } from '../../i18n/utils';
+import type { MusicPlaylist, MusicPlatform } from './music-data';
+
+interface Props {
+  lang?: Lang;
+  featured: MusicPlaylist;
+  currentPlatform: MusicPlatform;
+}
+
+const { lang = 'zh', featured, currentPlatform } = Astro.props;
+
+const texts = {
+  zh: {
+    eyebrow: 'MUSIC DISCOVERY',
+    title: '把夜色、光线与旋律排成一整个房间。',
+    subtitle: '从这里挑一张歌单，像翻开一本气味和温度都不同的短篇集。',
+    primary: '进入歌单',
+    secondary: '换一组情绪',
+  },
+  en: {
+    eyebrow: 'MUSIC DISCOVERY',
+    title: 'Arrange color, light, and rhythm into one listening room.',
+    subtitle: 'Pick a playlist here as if opening a short collection with its own weather, texture, and pulse.',
+    primary: 'Open Playlist',
+    secondary: 'Shift the Mood',
+  },
+}[lang];
+
+const playlistHref = `/${lang === 'en' ? 'en/' : ''}music/playlist/${featured.platform}/${featured.id}`;
+---
+
+<section class={`music-hero accent-${currentPlatform}`}>
+  <div class="music-hero-corner music-hero-corner-top-left">
+    <span class="music-hero-corner-line"></span>
+    <span class="music-hero-corner-text">ARCHIVE 02 / LISTENING ROOM</span>
+  </div>
+  <div class="music-hero-wave"></div>
+  <div class="music-hero-copy">
+    <div class="music-hero-eyebrow">{texts.eyebrow}</div>
+    <h1 class="music-hero-title">{texts.title}</h1>
+    <p class="music-hero-subtitle">{texts.subtitle}</p>
+
+    <div class="music-hero-actions">
+      <a class="music-hero-primary" href={playlistHref}>{texts.primary}</a>
+      <button class="music-hero-secondary" type="button" id="music-shuffle-trigger">{texts.secondary}</button>
+    </div>
+  </div>
+
+  <a class="music-hero-featured" href={playlistHref} data-platform={featured.platform}>
+    <div class="music-hero-featured-glow"></div>
+    <div class="music-hero-featured-frame"></div>
+    <img src={featured.cover} alt={featured.name} class="music-hero-cover" />
+    <div class="music-hero-card-copy">
+      <span class="music-hero-chip">{featured.mood}</span>
+      <h2>{featured.name}</h2>
+      <p>{featured.description}</p>
+      <div class="music-hero-card-meta">
+        <span>{featured.platform}</span>
+        <span>selection 01</span>
+      </div>
+    </div>
+  </a>
+
+  <div class="music-hero-corner music-hero-corner-bottom-right">
+    <div class="music-hero-corner-grid"></div>
+    <div class="music-hero-corner-note">curated for late-night reading, walking, and replay</div>
+  </div>
+</section>
+
+<style>
+  .music-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    gap: 1.5rem;
+    padding: 2rem;
+    border-radius: 32px;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      linear-gradient(135deg, rgba(9, 10, 24, 0.96), rgba(16, 18, 42, 0.92));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+  }
+
+  .music-hero-corner {
+    position: absolute;
+    z-index: 1;
+    display: grid;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.54);
+    font-family: var(--font-code);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .music-hero-corner-top-left {
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .music-hero-corner-bottom-right {
+    right: 1.2rem;
+    bottom: 1.1rem;
+    justify-items: end;
+    max-width: 180px;
+    text-align: right;
+  }
+
+  .music-hero-corner-line {
+    width: 84px;
+    height: 1px;
+    background: rgba(255,255,255,0.24);
+  }
+
+  .music-hero-corner-grid {
+    width: 112px;
+    height: 34px;
+    background-image:
+      linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,0.12) 1px, transparent 1px);
+    background-size: 14px 14px;
+    opacity: 0.45;
+  }
+
+  .music-hero-corner-note {
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+  }
+
+  .music-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(0deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,0.75), rgba(0,0,0,0.2));
+    opacity: 0.5;
+    z-index: -1;
+  }
+
+  .music-hero::before,
+  .music-hero .music-hero-wave {
+    content: "";
+    position: absolute;
+    inset: auto;
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(40px);
+    opacity: 0.55;
+  }
+
+  .music-hero::before {
+    width: 240px;
+    height: 240px;
+    top: -60px;
+    right: 18%;
+    background: var(--hero-accent, rgba(97, 91, 255, 0.45));
+  }
+
+  .music-hero-wave {
+    left: -4%;
+    right: -4%;
+    bottom: -18px;
+    height: 130px;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.02) 20%, rgba(255,255,255,0.08) 100%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 10px, transparent 10px 20px);
+    clip-path: polygon(0 68%, 8% 60%, 16% 72%, 24% 55%, 32% 70%, 40% 50%, 48% 66%, 56% 44%, 64% 64%, 72% 48%, 80% 72%, 88% 56%, 100% 68%, 100% 100%, 0 100%);
+    animation: pixelWave 8s ease-in-out infinite;
+    filter: drop-shadow(0 -10px 24px rgba(255,255,255,0.06));
+  }
+
+  .music-hero::after {
+    width: 180px;
+    height: 180px;
+    bottom: -40px;
+    left: 30%;
+    background: var(--hero-secondary, rgba(39, 211, 255, 0.26));
+  }
+
+  .music-hero.accent-kugou {
+    --hero-accent: rgba(89, 119, 255, 0.55);
+    --hero-secondary: rgba(129, 73, 255, 0.42);
+  }
+
+  .music-hero.accent-netease {
+    --hero-accent: rgba(255, 98, 87, 0.58);
+    --hero-secondary: rgba(255, 168, 88, 0.4);
+  }
+
+  .music-hero.accent-tencent {
+    --hero-accent: rgba(39, 232, 201, 0.52);
+    --hero-secondary: rgba(74, 193, 255, 0.38);
+  }
+
+  .music-hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.85rem;
+  }
+
+  .music-hero-eyebrow {
+    font-family: var(--font-code);
+    font-size: 0.78rem;
+    letter-spacing: 0.24em;
+    color: rgba(255,255,255,0.58);
+  }
+
+  .music-hero-title {
+    margin: 0;
+    font-family: var(--font-title);
+    font-size: clamp(2.4rem, 4.8vw, 4.8rem);
+    line-height: 0.95;
+    color: #fff;
+    max-width: 10ch;
+  }
+
+  .music-hero-subtitle {
+    max-width: 48ch;
+    margin: 0;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+  }
+
+  .music-hero-actions {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+  }
+
+  .music-hero-primary,
+  .music-hero-secondary {
+    appearance: none;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0.9rem 1.2rem;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 700;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+
+  .music-hero-primary {
+    background: #fff;
+    color: #0e1021;
+    box-shadow: 0 18px 30px rgba(0,0,0,0.22);
+  }
+
+  .music-hero-secondary {
+    color: #fff;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14);
+  }
+
+  .music-hero-primary:hover,
+  .music-hero-secondary:hover,
+  .music-hero-featured:hover {
+    transform: translateY(-2px);
+  }
+
+  .music-hero-featured {
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: 340px;
+    padding: 1.1rem;
+    border-radius: 28px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.06));
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .music-hero-featured-frame {
+    position: absolute;
+    inset: 0.9rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .music-hero-featured-glow {
+    position: absolute;
+    inset: 14% 14% auto auto;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: var(--hero-accent, rgba(97, 91, 255, 0.45));
+    filter: blur(44px);
+    opacity: 0.65;
+    pointer-events: none;
+  }
+
+  .music-hero-cover {
+    width: min(100%, 100%);
+    height: 100%;
+    min-height: 210px;
+    justify-self: stretch;
+    object-fit: cover;
+    border-radius: 22px;
+    box-shadow: 0 22px 40px rgba(0,0,0,0.35);
+  }
+
+  .music-hero-card-copy h2,
+  .music-hero-card-copy p {
+    margin: 0;
+  }
+
+  .music-hero-card-copy {
+    display: grid;
+    gap: 0.55rem;
+    align-self: end;
+    padding-top: 0.8rem;
+  }
+
+  .music-hero-card-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+    color: rgba(255,255,255,0.48);
+    font-family: var(--font-code);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .music-hero-chip {
+    width: fit-content;
+    padding: 0.38rem 0.62rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.16);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .music-hero-card-copy p {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 900px) {
+    .music-hero {
+      grid-template-columns: 1fr;
+      padding: 1.4rem;
+    }
+
+    .music-hero-title {
+      max-width: none;
+    }
+
+    .music-hero-featured {
+      min-height: 280px;
+    }
+
+    .music-hero-cover {
+      justify-self: stretch;
+      width: 100%;
+      min-height: 180px;
+    }
+
+    .music-hero-corner-top-left,
+    .music-hero-corner-bottom-right {
+      display: none;
+    }
+  }
+
+  @keyframes pixelWave {
+    0%, 100% {
+      transform: translateY(0) scaleY(1);
+      opacity: 0.75;
+    }
+    50% {
+      transform: translateY(-8px) scaleY(1.06);
+      opacity: 1;
+    }
+  }
+</style>

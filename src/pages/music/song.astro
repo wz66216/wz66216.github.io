@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PlaylistDetailHero from '../../components/music/PlaylistDetailHero.astro';
+import LyricsPanel from '../../components/music/LyricsPanel.astro';
+import VinylPlayer from '../../components/music/VinylPlayer.astro';
+
+const lang = 'zh' as const;
+---
+
+<BaseLayout title="单曲沉浸播放 | Wang Zhai" lang={lang}>
+  <div class="song-detail-page" data-lang={lang}>
+    <div id="song-detail-hero-host"></div>
+
+    <div class="song-detail-grid">
+      <div class="song-detail-side-stack">
+        <LyricsPanel title="当前状态" description="像把房间里的灯调低一点，只留下封面、嗓音和歌词彼此靠近。这里适合把一首歌听得更慢，也听得更久。" />
+        <section class="song-detail-meta-card">
+          <h2>听感注记</h2>
+          <ul>
+            <li>更靠近歌词与呼吸</li>
+            <li>更少解释，更多停留</li>
+            <li>适合一首歌循环很多遍的时候</li>
+          </ul>
+        </section>
+      </div>
+      <div class="song-detail-player-shell">
+        <VinylPlayer id="" server="netease" type="song" title="加载中..." artist="" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  const params = new URLSearchParams(window.location.search);
+  const songId = params.get('id') || '';
+  const platform = params.get('platform') || 'netease';
+  const title = params.get('title') || '单曲沉浸播放';
+  const cover = params.get('cover') || 'https://api.injahow.cn/meting/?server=netease&type=pic&id=109951172141167289';
+  const artist = params.get('artist') || '';
+
+  const heroHost = document.getElementById('song-detail-hero-host');
+  const player = document.querySelector('.song-detail-player-shell .vinyl-player');
+  if (player instanceof HTMLElement) {
+    player.dataset.id = songId;
+    player.dataset.server = platform;
+    player.dataset.type = 'song';
+    player.dataset.title = title;
+    player.dataset.artist = artist;
+    player.dataset.cover = cover;
+  }
+
+  if (heroHost) {
+    heroHost.innerHTML = `
+      <section class="playlist-detail-hero song-focus-hero accent-${platform}">
+        <a class="playlist-detail-back" href="/music">返回音乐探索页</a>
+        <div class="song-focus-stage-grid"></div>
+        <div class="playlist-detail-cover-shell">
+          <img src="${cover}" alt="${title}" class="playlist-detail-cover" />
+        </div>
+        <div class="playlist-detail-copy">
+          <span class="playlist-detail-label">${platform}</span>
+          <h1>${title}</h1>
+          <p>${artist || '当前单曲会在这里进入更沉浸的播放状态。'}</p>
+          <div class="song-focus-stage-meta">
+            <span>focus mode</span>
+            <span>${songId || 'unknown id'}</span>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+</script>
+
+<style>
+  .song-detail-page {
+    --song-orb-a: rgba(255, 110, 92, 0.18);
+    --song-orb-b: rgba(88, 126, 255, 0.16);
+    min-height: calc(100vh - 4rem);
+    padding: 1.4rem 1.2rem 3rem;
+    display: grid;
+    gap: 1.2rem;
+    background: linear-gradient(180deg, #090b15 0%, #15192e 48%, #0b0d17 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .song-detail-page::before,
+  .song-detail-page::after {
+    content: "";
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(80px);
+    mix-blend-mode: screen;
+  }
+
+  .song-detail-page::before {
+    top: 12%;
+    right: 8%;
+    width: 260px;
+    height: 260px;
+    background: var(--song-orb-a);
+  }
+
+  .song-detail-page::after {
+    bottom: 8%;
+    left: 10%;
+    width: 220px;
+    height: 220px;
+    background: var(--song-orb-b);
+  }
+
+  .song-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
+    gap: 1rem;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+  }
+
+  .song-detail-side-stack {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .song-detail-player-shell {
+    border-radius: 30px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  .song-detail-meta-card {
+    padding: 1rem;
+    border-radius: 24px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.05)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 10px, transparent 10px 20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.72);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .song-detail-meta-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -4% -10px -4%;
+    height: 34px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 16px);
+    clip-path: polygon(0 66%, 12% 48%, 24% 70%, 36% 44%, 48% 62%, 60% 40%, 72% 64%, 84% 48%, 100% 68%, 100% 100%, 0 100%);
+    opacity: 0.22;
+  }
+
+  .song-detail-meta-card h2 {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-title);
+    font-size: 1rem;
+    color: #fff;
+  }
+
+  .song-detail-meta-card ul {
+    margin: 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  :global(.song-focus-hero .playlist-detail-cover-shell) {
+    width: 220px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+  }
+
+  :global(.song-focus-hero) {
+    min-height: 320px;
+  }
+
+  :global(.song-focus-stage-grid) {
+    position: absolute;
+    inset: 1rem auto auto 1rem;
+    width: 120px;
+    height: 120px;
+    background-image:
+      linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 16px 16px;
+    opacity: 0.28;
+  }
+
+  :global(.song-focus-stage-meta) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-family: var(--font-code);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  @media (max-width: 840px) {
+    .song-detail-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -11,7 +11,19 @@ export const translations = {
     // Nav
     "nav.home": "首页",
     "nav.blog": "博客",
+    "nav.music": "音乐",
     "nav.about": "关于",
+
+    // Music
+    "music.page.title": "音乐 / MUSIC",
+    "music.platform": "选择平台",
+    "music.search.placeholder": "搜索歌曲...",
+    "music.nowPlaying": "正在播放",
+    "music.playlist": "歌单",
+    "music.song": "歌曲",
+    "music.search.results": "搜索结果",
+    "music.search.empty": "输入关键词搜索歌曲",
+    "music.search.no.results": "没有搜索到结果",
 
     // Hero
     "hero.subtitle.line1": "清华大学物理学 · 国际象棋国家二级运动员",
@@ -96,7 +108,19 @@ export const translations = {
     // Nav
     "nav.home": "Home",
     "nav.blog": "Blog",
+    "nav.music": "Music",
     "nav.about": "About",
+
+    // Music
+    "music.page.title": "MUSIC",
+    "music.platform": "Platform",
+    "music.search.placeholder": "Search songs...",
+    "music.nowPlaying": "Now Playing",
+    "music.playlist": "Playlists",
+    "music.song": "Songs",
+    "music.search.results": "Search Results",
+    "music.search.empty": "Type to search songs",
+    "music.search.no.results": "No matching songs",
 
     // Hero
     "hero.subtitle.line1": "Tsinghua University Physics · National Chess Player",

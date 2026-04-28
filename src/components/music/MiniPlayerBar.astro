@@ -1,0 +1,127 @@
+---
+import type { Lang } from '../../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const openLabel = lang === 'zh' ? '打开详情' : 'Open Detail';
+const idleTitle = lang === 'zh' ? '还没有正在播放的曲目' : 'Nothing is playing yet';
+const idleSubtitle = lang === 'zh' ? '从歌单或搜索结果里选一首歌。' : 'Pick a track from playlists or search results.';
+---
+
+<div class="mini-player-bar" id="mini-player-bar" hidden>
+  <div class="mini-player-cover-shell">
+    <img id="mini-player-cover" class="mini-player-cover" src="" alt="" />
+  </div>
+  <div class="mini-player-copy">
+    <strong id="mini-player-title">{idleTitle}</strong>
+    <span id="mini-player-artist">{idleSubtitle}</span>
+  </div>
+  <a id="mini-player-link" class="mini-player-link" href="/music">{openLabel}</a>
+</div>
+
+<style>
+  .mini-player-bar {
+    position: sticky;
+    bottom: 1rem;
+    z-index: 12;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.8rem 0.95rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.06)),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px);
+    background-size: auto, 16px 16px, 16px 16px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.28);
+    overflow: hidden;
+  }
+
+  .mini-player-bar::after {
+    content: "";
+    position: absolute;
+    left: -3%;
+    right: -3%;
+    bottom: -8px;
+    height: 28px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 16px);
+    clip-path: polygon(0 68%, 12% 48%, 24% 72%, 36% 44%, 48% 64%, 60% 40%, 72% 66%, 84% 48%, 100% 70%, 100% 100%, 0 100%);
+    opacity: 0.2;
+    pointer-events: none;
+  }
+
+  .mini-player-cover-shell {
+    width: 52px;
+    height: 52px;
+    padding: 2px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255,99,88,0.7), rgba(72,199,255,0.65));
+  }
+
+  .mini-player-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+    display: block;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .mini-player-copy {
+    min-width: 0;
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .mini-player-copy::before {
+    content: "NOW PLAYING";
+    font-family: var(--font-code);
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.44);
+  }
+
+  .mini-player-copy strong,
+  .mini-player-copy span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mini-player-copy strong {
+    color: #fff;
+  }
+
+  .mini-player-copy span {
+    color: rgba(255,255,255,0.62);
+    font-size: 0.85rem;
+  }
+
+  .mini-player-link {
+    text-decoration: none;
+    color: #0d1124;
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.7rem 0.95rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 640px) {
+    .mini-player-bar {
+      grid-template-columns: auto 1fr;
+    }
+
+    .mini-player-link {
+      grid-column: 1 / -1;
+      text-align: center;
+    }
+  }
+</style>

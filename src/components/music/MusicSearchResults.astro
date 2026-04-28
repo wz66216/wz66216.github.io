@@ -1,0 +1,50 @@
+---
+import type { Lang } from '../../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+
+const title = lang === 'zh' ? '搜索结果' : 'Search Results';
+const empty = lang === 'zh' ? '试着输入一首歌、一个歌手，或者某种你此刻想听见的情绪。' : 'Try a song title, an artist name, or simply the mood you want to hear right now.';
+---
+
+<section class="music-search-results">
+  <div class="music-search-results-head">
+    <h2>{title}</h2>
+  </div>
+  <div id="search-results-list" class="music-search-results-list">
+    <div class="music-search-empty">{empty}</div>
+  </div>
+</section>
+
+<style>
+  .music-search-results {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .music-search-results-head h2 {
+    margin: 0;
+    font-family: var(--font-title);
+    font-size: 1.2rem;
+    color: #fff;
+  }
+
+  .music-search-results-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .music-search-empty {
+    padding: 1rem 1.1rem;
+    border-radius: 18px;
+    border: 1px dashed rgba(255,255,255,0.16);
+    color: rgba(255,255,255,0.52);
+    font-family: var(--font-code);
+    background: rgba(255,255,255,0.03);
+  }
+</style>

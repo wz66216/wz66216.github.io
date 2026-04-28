@@ -1,0 +1,148 @@
+---
+interface Playlist {
+  id: string;
+  name: string;
+  cover: string;
+  description?: string;
+}
+
+interface Props {
+  playlists?: Playlist[];
+}
+
+const { playlists = [] } = Astro.props;
+---
+
+<div class="playlist-grid">
+  <div class="grid-label">♫ {playlists.length > 0 ? "歌单" : ""}</div>
+  <div class="grid-items">
+    {playlists.map((playlist) => (
+      <button class="playlist-card" data-playlist-id={playlist.id} data-server={playlist.description?.toLowerCase()}>
+        <img src={playlist.cover} alt={playlist.name} class="playlist-cover" />
+        <div class="playlist-info">
+          <div class="playlist-name">{playlist.name}</div>
+          {playlist.description && (
+            <div class="playlist-desc">{playlist.description}</div>
+          )}
+        </div>
+      </button>
+    ))}
+    
+    <!-- Placeholder when no playlists -->
+    {playlists.length === 0 && (
+      <div class="playlist-placeholder">
+        <span class="placeholder-icon">♫</span>
+        <p>暂无歌单</p>
+      </div>
+    )}
+  </div>
+</div>
+
+<script>
+  const playlistGridRoot = document.querySelector(".playlist-grid");
+
+  playlistGridRoot?.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const card = target.closest(".playlist-card");
+    if (!(card instanceof HTMLElement)) return;
+
+    const playlistId = card.dataset.playlistId;
+    const server = card.dataset.server;
+    if (!playlistId) return;
+
+    window.dispatchEvent(
+      new CustomEvent("playlist-select", {
+        detail: { playlistId, server },
+      })
+    );
+  });
+</script>
+
+<style>
+  .playlist-grid {
+    margin: var(--space-lg) 0;
+  }
+
+  .grid-label {
+    font-family: var(--font-title);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .grid-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .playlist-card {
+    appearance: none;
+    border: none;
+    background: var(--color-bg-white);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    padding: 0;
+    overflow: hidden;
+    text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 2px 2px 0 var(--color-border);
+  }
+
+  .playlist-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--color-border);
+  }
+
+  .playlist-cover {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+  }
+
+  .playlist-info {
+    padding: var(--space-sm);
+  }
+
+  .playlist-name {
+    font-family: var(--font-title);
+    font-size: 0.9rem;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .playlist-desc {
+    font-family: var(--font-code);
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .playlist-placeholder {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+    border: 1px dashed var(--color-border);
+    color: var(--color-text-secondary);
+    text-align: center;
+  }
+
+  .placeholder-icon {
+    font-size: 2rem;
+    opacity: 0.3;
+    margin-bottom: var(--space-sm);
+  }
+</style>

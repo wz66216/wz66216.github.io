@@ -1,0 +1,280 @@
+---
+import type { MusicPlaylist } from './music-data';
+
+interface Props {
+  playlists: MusicPlaylist[];
+  currentPlatform: MusicPlaylist['platform'];
+  lang?: 'zh' | 'en';
+}
+
+const { playlists, currentPlatform, lang = 'zh' } = Astro.props;
+
+const labels = {
+  zh: { title: '精选歌单', subtitle: '每一张卡片都对应一种色温、一段步速，和一小块可以停留的情绪。', open: '进入' },
+  en: { title: 'Featured Playlists', subtitle: 'Each card holds its own temperature, pacing, and emotional space to stay in for a while.', open: 'Open' },
+}[lang];
+
+const visiblePlaylists = playlists.filter((item) => item.platform === currentPlatform);
+---
+
+<section class="playlist-masonry-section">
+  <div class="playlist-masonry-head">
+    <div>
+      <h2>{labels.title}</h2>
+      <p>{labels.subtitle}</p>
+    </div>
+  </div>
+
+  <div class="playlist-masonry-grid">
+    {visiblePlaylists.map((playlist, index) => {
+      const href = `/${lang === 'en' ? 'en/' : ''}music/playlist/${playlist.platform}/${playlist.id}`;
+      return (
+        <a class={`playlist-tile tile-${index + 1} accent-${playlist.accent}`} href={href} data-platform={playlist.platform} data-playlist-id={playlist.id}>
+          <img src={playlist.cover} alt={playlist.name} class="playlist-tile-cover" />
+          <div class="playlist-tile-overlay"></div>
+          <div class="playlist-tile-copy">
+            <span class="playlist-tile-mood">{playlist.platform} / {playlist.mood}</span>
+            <h3>{playlist.name}</h3>
+            <p>{playlist.description}</p>
+            <span class="playlist-tile-link">{labels.open}</span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .playlist-masonry-section {
+    display: grid;
+    gap: 1rem;
+    position: relative;
+  }
+
+  .playlist-masonry-section::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: -1.2rem;
+    width: 120px;
+    height: 28px;
+    background-image:
+      linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,0.12) 1px, transparent 1px);
+    background-size: 12px 12px;
+    opacity: 0.32;
+    pointer-events: none;
+  }
+
+  .playlist-masonry-head h2,
+  .playlist-masonry-head p {
+    margin: 0;
+  }
+
+  .playlist-masonry-head h2 {
+    font-family: var(--font-title);
+    font-size: 1.3rem;
+    color: #fff;
+  }
+
+  .playlist-masonry-head p {
+    margin-top: 0.35rem;
+    color: rgba(255,255,255,0.58);
+  }
+
+  .playlist-masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .playlist-tile {
+    position: relative;
+    display: block;
+    min-height: 240px;
+    overflow: hidden;
+    border-radius: 26px;
+    text-decoration: none;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.08);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.06)),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px);
+    background-size: auto, 18px 18px, 18px 18px;
+    isolation: isolate;
+    transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+  }
+
+  .playlist-tile:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,0.14);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+  }
+
+  .playlist-tile::after {
+    content: "";
+    position: absolute;
+    left: -3%;
+    right: -3%;
+    bottom: -10px;
+    height: 36px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 16px);
+    clip-path: polygon(0 64%, 12% 48%, 24% 70%, 36% 42%, 48% 66%, 60% 38%, 72% 64%, 84% 46%, 100% 68%, 100% 100%, 0 100%);
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .tile-1 {
+    grid-column: span 6;
+    min-height: 390px;
+  }
+
+  .tile-2,
+  .tile-3 {
+    grid-column: span 3;
+    min-height: 250px;
+  }
+
+  .tile-4,
+  .tile-5,
+  .tile-6 {
+    grid-column: span 4;
+    min-height: 210px;
+  }
+
+  .playlist-tile-cover,
+  .playlist-tile-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .playlist-tile-cover {
+    object-fit: cover;
+    transform: scale(1.02);
+    transition: transform 0.35s ease;
+  }
+
+  .playlist-tile:hover .playlist-tile-cover {
+    transform: scale(1.08);
+  }
+
+  .playlist-tile-overlay {
+    background:
+      linear-gradient(180deg, rgba(8,10,20,0.08), rgba(8,10,20,0.78)),
+      linear-gradient(135deg, var(--tile-accent, rgba(97,91,255,0.4)), transparent 60%);
+  }
+
+  .accent-coral { --tile-accent: rgba(255, 101, 87, 0.52); }
+  .accent-violet { --tile-accent: rgba(135, 92, 255, 0.48); }
+  .accent-cyan { --tile-accent: rgba(48, 217, 255, 0.46); }
+  .accent-blue { --tile-accent: rgba(90, 139, 255, 0.44); }
+  .accent-teal { --tile-accent: rgba(52, 214, 171, 0.42); }
+  .accent-pink { --tile-accent: rgba(255, 105, 178, 0.42); }
+
+  .playlist-tile-copy {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.2rem;
+    z-index: 1;
+  }
+
+  .tile-1 .playlist-tile-copy {
+    padding: 1.4rem;
+    gap: 0.7rem;
+  }
+
+  .tile-1 .playlist-tile-copy h3 {
+    font-size: 1.55rem;
+    max-width: 12ch;
+  }
+
+  .tile-1 .playlist-tile-copy p {
+    max-width: 32ch;
+    font-size: 0.95rem;
+  }
+
+  .tile-2 .playlist-tile-copy,
+  .tile-3 .playlist-tile-copy {
+    padding: 1rem;
+  }
+
+  .tile-4 .playlist-tile-copy,
+  .tile-5 .playlist-tile-copy,
+  .tile-6 .playlist-tile-copy {
+    padding: 0.9rem;
+    gap: 0.35rem;
+  }
+
+  .tile-4 .playlist-tile-copy h3,
+  .tile-5 .playlist-tile-copy h3,
+  .tile-6 .playlist-tile-copy h3 {
+    font-size: 0.98rem;
+  }
+
+  .tile-4 .playlist-tile-copy p,
+  .tile-5 .playlist-tile-copy p,
+  .tile-6 .playlist-tile-copy p {
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .playlist-tile-copy h3,
+  .playlist-tile-copy p {
+    margin: 0;
+  }
+
+  .playlist-tile-copy h3 {
+    font-family: var(--font-title);
+    font-size: 1.12rem;
+    line-height: 1.05;
+  }
+
+  .playlist-tile-copy p {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.55;
+  }
+
+  .playlist-tile-mood,
+  .playlist-tile-link {
+    width: fit-content;
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .playlist-tile-link {
+    margin-top: 0.2rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 900px) {
+    .playlist-masonry-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tile-1,
+    .tile-2,
+    .tile-3,
+    .tile-4,
+    .tile-5,
+    .tile-6 {
+      grid-column: span 1;
+      min-height: 240px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .playlist-masonry-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

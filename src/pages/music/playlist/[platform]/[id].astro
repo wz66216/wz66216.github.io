@@ -1,0 +1,226 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import PlaylistDetailHero from '../../../../components/music/PlaylistDetailHero.astro';
+import LyricsPanel from '../../../../components/music/LyricsPanel.astro';
+import VinylPlayer from '../../../../components/music/VinylPlayer.astro';
+import { musicPlaylistsZh } from '../../../../components/music/music-data';
+
+export function getStaticPaths() {
+  return musicPlaylistsZh.map((playlist) => ({
+    params: { platform: playlist.platform, id: playlist.id },
+    props: { playlist },
+  }));
+}
+
+const { playlist } = Astro.props;
+const lang = 'zh' as const;
+
+---
+
+<BaseLayout title={`${playlist.name} | Wang Zhai`} lang={lang}>
+  <div class="music-detail-page">
+    <PlaylistDetailHero
+      title={playlist.name}
+      description={playlist.description}
+      cover={playlist.cover}
+      platform={playlist.platform}
+      backHref="/music"
+      backLabel="返回音乐探索页"
+    />
+
+    <div class="music-detail-grid">
+      <LyricsPanel title="氛围说明" description={`这是“${playlist.name}”的沉浸式播放页。背景与播放体验会围绕歌单的封面气质展开，主页面负责探索，这里负责停留、播放与进入情绪。`} />
+      <section class="music-detail-atlas-card">
+        <h2>歌单索引</h2>
+        <p>这一页不再把歌单拆成很多块去解释，而是保留一条更完整的播放动线：上方进入气氛，下方直接进入整组曲目的流动。</p>
+      </section>
+    </div>
+
+    <div class="music-detail-support-grid">
+      <section class="music-detail-note-card">
+        <h2>Listening Notes</h2>
+        <p>从歌单封面、歌名气质到播放时的色温变化，这一页的目标不是“展示很多信息”，而是把一整组歌听成一个连续场景。</p>
+      </section>
+      <section class="music-detail-stamp-card">
+        <span>playlist archive</span>
+        <strong>{playlist.platform}</strong>
+        <small>{playlist.id}</small>
+      </section>
+    </div>
+
+    <div class="music-detail-player-shell">
+      <VinylPlayer id={playlist.id} server={playlist.platform} type="playlist" title={playlist.name} artist="" cover={playlist.cover} />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .music-detail-page {
+    min-height: calc(100vh - 4rem);
+    padding: 1.4rem 1.2rem 3rem;
+    display: grid;
+    gap: 1.2rem;
+    background: linear-gradient(180deg, #080a13 0%, #11172c 42%, #0a0c16 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .music-detail-page::before,
+  .music-detail-page::after {
+    content: "";
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(72px);
+    mix-blend-mode: screen;
+  }
+
+  .music-detail-page::before {
+    top: 8rem;
+    right: 10%;
+    width: 240px;
+    height: 240px;
+    background: rgba(255, 98, 97, 0.16);
+  }
+
+  .music-detail-page::after {
+    bottom: 10%;
+    left: 12%;
+    width: 220px;
+    height: 220px;
+    background: rgba(90, 124, 255, 0.14);
+  }
+
+  .music-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .music-detail-player-shell {
+    border-radius: 30px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  .music-detail-atlas-card {
+    padding: 1rem;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.05)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 10px, transparent 10px 20px);
+    color: rgba(255,255,255,0.72);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .music-detail-atlas-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -4% -10px -4%;
+    height: 28px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 16px);
+    clip-path: polygon(0 66%, 12% 48%, 24% 70%, 36% 44%, 48% 64%, 60% 40%, 72% 66%, 84% 48%, 100% 68%, 100% 100%, 0 100%);
+    opacity: 0.18;
+  }
+
+  .music-detail-atlas-card h2,
+  .music-detail-atlas-card p {
+    margin: 0;
+  }
+
+  .music-detail-atlas-card h2 {
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .music-detail-atlas-card p {
+    line-height: 1.65;
+  }
+
+  .music-detail-support-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .music-detail-note-card,
+  .music-detail-stamp-card {
+    padding: 1rem;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.05)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 10px, transparent 10px 20px);
+    color: rgba(255,255,255,0.72);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .music-detail-note-card::after,
+  .music-detail-stamp-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -4% -10px -4%;
+    height: 28px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 16px);
+    clip-path: polygon(0 66%, 12% 48%, 24% 70%, 36% 44%, 48% 64%, 60% 40%, 72% 66%, 84% 48%, 100% 68%, 100% 100%, 0 100%);
+    opacity: 0.18;
+  }
+
+  .music-detail-note-card h2,
+  .music-detail-note-card p,
+  .music-detail-stamp-card span,
+  .music-detail-stamp-card strong,
+  .music-detail-stamp-card small {
+    margin: 0;
+  }
+
+  .music-detail-note-card h2 {
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .music-detail-note-card p {
+    line-height: 1.65;
+  }
+
+  .music-detail-stamp-card {
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+    text-transform: uppercase;
+    font-family: var(--font-code);
+  }
+
+  .music-detail-stamp-card span,
+  .music-detail-stamp-card small {
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+  }
+
+  .music-detail-stamp-card strong {
+    color: #fff;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 840px) {
+    .music-detail-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .music-detail-support-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,108 @@
+---
+import type { Lang } from '../../i18n/utils';
+import { t } from '../../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+  currentServer?: "kugou" | "netease" | "tencent";
+}
+
+const { lang = "zh" as const, currentServer = "kugou" } = Astro.props;
+
+const platforms = [
+  { id: "kugou", name: "酷狗", icon: "♫" },
+  { id: "netease", name: "网易云", icon: "♬" },
+  { id: "tencent", name: "QQ音乐", icon: "♪" },
+] as const;
+---
+
+<div class="platform-selector">
+  <div class="platform-label">♪ {t(lang, "music.platform")}</div>
+  <div class="platform-buttons">
+    {platforms.map((platform) => (
+      <button 
+        class:list={["platform-btn", { active: currentServer === platform.id }]}
+        data-platform={platform.id}
+      >
+        <span class="platform-icon">{platform.icon}</span>
+        <span class="platform-name">{platform.name}</span>
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  const selectorRoot = document.querySelector(".platform-selector");
+
+  selectorRoot?.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const button = target.closest(".platform-btn");
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const platform = button.dataset.platform;
+    if (!platform) return;
+
+    window.dispatchEvent(new CustomEvent("platform-change", { detail: { platform } }));
+
+    selectorRoot.querySelectorAll(".platform-btn").forEach((b) => b.classList.remove("active"));
+    button.classList.add("active");
+  });
+</script>
+
+<style>
+  .platform-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .platform-label {
+    font-family: var(--font-title);
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .platform-buttons {
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .platform-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: var(--space-xs) var(--space-md);
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .platform-btn:hover {
+    border-color: var(--color-text-primary);
+  }
+
+  .platform-btn.active {
+    background: var(--color-accent);
+    color: var(--color-inverse);
+    border-color: var(--color-accent);
+  }
+
+  .platform-btn .platform-name,
+  .platform-btn .platform-icon {
+    color: inherit;
+  }
+
+  .platform-icon {
+    font-size: 1.1em;
+  }
+</style>

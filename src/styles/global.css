@@ -189,6 +189,11 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.main-content {
+  margin-left: 240px;
+  min-height: 100vh;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-title);
   font-weight: 900;
@@ -365,6 +370,13 @@ body.focus-mode .post-meta-sidebar .actions-card .action-btn#focus-mode-btn {
   100% {
     transform: perspective(1000px) rotateY(0deg);
     opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding-top: 56px;
   }
 }
 

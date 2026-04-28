@@ -1,0 +1,58 @@
+---
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<section class="lyrics-side-panel">
+  <div class="lyrics-side-panel-head">
+    <h2>{title}</h2>
+  </div>
+  <p>{description}</p>
+</section>
+
+<style>
+  .lyrics-side-panel {
+    display: grid;
+    gap: 0.8rem;
+    min-height: 100%;
+    padding: 1rem;
+    border-radius: 24px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.05)),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px);
+    background-size: auto, 24px 100%;
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lyrics-side-panel::after {
+    content: "";
+    position: absolute;
+    inset: auto -4% -10px -4%;
+    height: 36px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 16px);
+    clip-path: polygon(0 65%, 12% 48%, 24% 70%, 36% 42%, 48% 64%, 60% 40%, 72% 62%, 84% 46%, 100% 66%, 100% 100%, 0 100%);
+    opacity: 0.22;
+  }
+
+  .lyrics-side-panel-head h2,
+  .lyrics-side-panel p {
+    margin: 0;
+  }
+
+  .lyrics-side-panel-head h2 {
+    color: #fff;
+    font-family: var(--font-title);
+    font-size: 1.1rem;
+  }
+
+  .lyrics-side-panel p {
+    color: rgba(255,255,255,0.68);
+    line-height: 1.75;
+  }
+</style>
