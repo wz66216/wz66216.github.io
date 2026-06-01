@@ -33,6 +33,10 @@ const navItems = [
           <span class="nav-text">{item.name}</span>
         </a>
       ))}
+      <a href="/chesslab/" class:list={['nav-item', { active: pathname.startsWith('/chesslab/') }]}>
+        <span class="chess-marker">♟</span>
+        <span class="nav-text">搜索实验室</span>
+      </a>
     </nav>
 
     <div class="bottom-controls">
