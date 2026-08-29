@@ -35,11 +35,11 @@ const navItems = [
       ))}
       <a href="/chess/analyze" class:list={['nav-item', { active: pathname.startsWith('/chess/analyze') }]}>
         <span class="chess-marker">♜</span>
-        <span class="nav-text">国际象棋分析</span>
+        <span class="nav-text">{t(lang, 'nav.chessAnalysis')}</span>
       </a>
       <a href="/chess/search-lab" class:list={['nav-item', { active: pathname.startsWith('/chess/search-lab') }]}>
         <span class="chess-marker">♟</span>
-        <span class="nav-text">搜索实验室</span>
+        <span class="nav-text">{t(lang, 'nav.searchLab')}</span>
       </a>
     </nav>
 

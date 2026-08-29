@@ -1,0 +1,162 @@
+---
+import { t, type Lang, defaultLang, getLangPrefix } from '../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = defaultLang } = Astro.props;
+const prefix = getLangPrefix(lang);
+
+const areas = [
+  {
+    piece: '♔',
+    coordinate: 'QEC',
+    title: t(lang, 'focus.qec.title'),
+    description: t(lang, 'focus.qec.desc'),
+    link: 'https://github.com/wz66216/toric-code-threshold',
+    linkLabel: t(lang, 'focus.qec.link'),
+  },
+  {
+    piece: '♞',
+    coordinate: 'CHESS',
+    title: t(lang, 'focus.chess.title'),
+    description: t(lang, 'focus.chess.desc'),
+    link: '/chess/analyze',
+    linkLabel: t(lang, 'focus.chess.link'),
+  },
+  {
+    piece: '♜',
+    coordinate: 'QUANT',
+    title: t(lang, 'focus.quant.title'),
+    description: t(lang, 'focus.quant.desc'),
+    link: `${prefix}/quant-finance`,
+    linkLabel: t(lang, 'focus.quant.link'),
+  },
+];
+---
+
+<section id="focus">
+  <div class="container animate-on-scroll">
+    <h2>{t(lang, 'focus.title')}</h2>
+    <div class="chessboard-divider" role="separator"></div>
+
+    <div class="focus-grid">
+      {areas.map((area) => (
+        <article class="focus-card">
+          <div class="card-index">
+            <span class="piece" aria-hidden="true">{area.piece}</span>
+            <span class="coordinate">{area.coordinate}</span>
+          </div>
+          <h3>{area.title}</h3>
+          <p>{area.description}</p>
+          <a href={area.link}>{area.linkLabel}</a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  #focus {
+    padding: var(--space-2xl) var(--space-lg);
+    background: var(--color-bg-white);
+  }
+
+  h2 {
+    color: var(--color-text-primary);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    text-transform: uppercase;
+  }
+
+  .focus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border: 1px solid var(--color-border);
+  }
+
+  .focus-card {
+    min-height: 320px;
+    padding: var(--space-lg);
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    color: var(--color-text-primary);
+  }
+
+  .focus-card:last-child {
+    border-right: 0;
+  }
+
+  .focus-card:nth-child(even) {
+    background: var(--color-section-dark-bg);
+    color: var(--color-section-dark-text);
+  }
+
+  .card-index {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: auto;
+  }
+
+  .piece {
+    font-size: 3.5rem;
+    line-height: 1;
+  }
+
+  .coordinate {
+    font-family: var(--font-code);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    opacity: 0.55;
+  }
+
+  h3 {
+    font-size: 1.35rem;
+    margin: var(--space-xl) 0 var(--space-sm);
+  }
+
+  p {
+    line-height: 1.7;
+    opacity: 0.72;
+    margin-bottom: var(--space-lg);
+  }
+
+  a {
+    width: fit-content;
+    font-family: var(--font-code);
+    font-size: 0.85rem;
+    border-bottom: 1px solid currentColor;
+  }
+
+  a:hover {
+    opacity: 0.65;
+  }
+
+  @media (max-width: 900px) {
+    .focus-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .focus-card {
+      min-height: 240px;
+      border-right: 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .focus-card:last-child {
+      border-bottom: 0;
+    }
+
+    .focus-card:nth-child(even) {
+      background: var(--color-section-dark-bg);
+    }
+  }
+
+  @media (max-width: 768px) {
+    #focus {
+      padding: var(--space-xl) var(--space-md);
+    }
+  }
+</style>
