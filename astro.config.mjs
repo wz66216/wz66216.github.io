@@ -3,7 +3,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
-  site: 'https://wangzhai.pages.dev',
+  site: 'https://thu-wangzhai.pages.dev',
   output: 'static',
   markdown: {
     remarkPlugins: [remarkMath],

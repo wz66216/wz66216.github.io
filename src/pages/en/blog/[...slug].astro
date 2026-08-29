@@ -31,6 +31,12 @@ const categoryIcons = {
 };
 
 const categoryIcon = categoryIcons[post.data.category as keyof typeof categoryIcons];
+const categoryLabels = {
+  "物理笔记": t(lang, 'blog.category.physics'),
+  "国际象棋": t(lang, 'blog.category.chess'),
+  "随笔": t(lang, 'blog.category.essay'),
+};
+const categoryLabel = categoryLabels[post.data.category as keyof typeof categoryLabels];
 const displayTitle = post.data.title_en || post.data.title;
 const displayDesc = post.data.description_en || post.data.description;
 ---
@@ -50,7 +56,7 @@ const displayDesc = post.data.description_en || post.data.description;
             <div class="meta">
               <time datetime={post.data.date.toISOString()}>{post.data.date.toISOString().split('T')[0]}</time>
               <span class="separator">·</span>
-              <span class="category"><span class="icon">{categoryIcon}</span> {post.data.category}</span>
+              <span class="category"><span class="icon">{categoryIcon}</span> {categoryLabel}</span>
             </div>
           </header>
 

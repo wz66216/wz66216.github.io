@@ -19,6 +19,12 @@ const categoryIcons: Record<string, string> = {
   '国际象棋': '♞',
   '随笔': '♝',
 };
+
+const categoryLabels: Record<string, string> = {
+  '物理笔记': t(lang, 'blog.category.physics'),
+  '国际象棋': t(lang, 'blog.category.chess'),
+  '随笔': t(lang, 'blog.category.essay'),
+};
 ---
 
 <section id="blog">
@@ -39,7 +45,7 @@ const categoryIcons: Record<string, string> = {
                 <span class="date">{post.data.date.toISOString().split('T')[0]}</span>
                 <span class="separator">·</span>
                 <span class="icon">{categoryIcons[post.data.category] || '♟'}</span>
-                <span class="category">{post.data.category}</span>
+                <span class="category">{categoryLabels[post.data.category] || post.data.category}</span>
               </div>
             </div>
           </a>

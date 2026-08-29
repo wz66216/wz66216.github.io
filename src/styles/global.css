@@ -290,13 +290,18 @@ body.focus-mode .post-meta-sidebar .actions-card .action-btn#focus-mode-btn {
 
 /* 1. Scroll Entrance Base */
 .animate-on-scroll {
-  opacity: 0;
-  transform: translateY(20px);
+  opacity: 1;
+  transform: none;
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
   will-change: opacity, transform;
 }
 
-.animate-on-scroll.visible {
+.animations-ready .animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.animations-ready .animate-on-scroll.visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -318,10 +323,14 @@ body.focus-mode .post-meta-sidebar .actions-card .action-btn#focus-mode-btn {
 }
 
 .animate-drop {
-  opacity: 0; /* Hidden initially */
+  opacity: 1;
 }
 
-.animate-drop.visible {
+.animations-ready .animate-drop {
+  opacity: 0;
+}
+
+.animations-ready .animate-drop.visible {
   animation: pieceDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; /* Bouncy "plonk" */
   animation-delay: calc(var(--stagger, 0) * 0.1s);
 }
@@ -343,10 +352,14 @@ body.focus-mode .post-meta-sidebar .actions-card .action-btn#focus-mode-btn {
 }
 
 .animate-knight {
+  opacity: 1;
+}
+
+.animations-ready .animate-knight {
   opacity: 0;
 }
 
-.animate-knight.visible {
+.animations-ready .animate-knight.visible {
   animation: knightMove 0.8s cubic-bezier(0.2, 0, 0.2, 1) forwards;
   animation-delay: calc(var(--stagger, 0) * 0.1s);
 }

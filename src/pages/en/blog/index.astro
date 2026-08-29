@@ -15,6 +15,12 @@ const categoryIcons = {
   "随笔": "♝"
 };
 
+const categoryLabels = {
+  "物理笔记": t(lang, 'blog.category.physics'),
+  "国际象棋": t(lang, 'blog.category.chess'),
+  "随笔": t(lang, 'blog.category.essay'),
+};
+
 // Strip markdown syntax to get plain text for search
 function stripMarkdown(md: string): string {
   return md
@@ -70,7 +76,7 @@ const searchData = sortedPosts.map(post => ({
               <span class="separator">·</span>
               <span class="category">
                 <span class="icon">{categoryIcons[post.data.category as keyof typeof categoryIcons]}</span>
-                {post.data.category}
+                {categoryLabels[post.data.category as keyof typeof categoryLabels]}
               </span>
             </div>
           </div>
